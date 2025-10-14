@@ -33,3 +33,18 @@ export interface AuthState {
   error: string | null;
 }
 
+/**
+ * Represents a user's presence information in the collaborative session
+ * 
+ * This is a simplified version of the User type containing only the information
+ * needed to display who's currently online in the canvas session.
+ * 
+ * @property userId - Unique identifier for the user (Firebase UID)
+ * @property displayName - User's display name shown in the online users list
+ * @property color - User's assigned color for visual identification
+ */
+export interface PresenceUser {
+  userId: string;
+  displayName: string;
+  color: string;
+}

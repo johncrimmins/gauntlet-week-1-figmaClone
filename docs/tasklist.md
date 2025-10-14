@@ -12,7 +12,7 @@ As you complete each PR, update this section:
 
 - [x] PR #1: Project Setup & Initial Deployment
 - [x] PR #2: Authentication System
-- [ ] PR #3: Presence Awareness System
+- [x] PR #3: Presence Awareness System
 - [ ] PR #4: Multiplayer Cursors & Deploy
 - [ ] PR #5: Basic Canvas with Pan/Zoom
 - [ ] PR #6: Rectangle Shape Creation & Deploy
@@ -20,7 +20,7 @@ As you complete each PR, update this section:
 - [ ] PR #8: State Persistence & Final Deploy
 - [ ] PR #9: Bug Fixes & Documentation
 
-**Current Status:** PR #2 Complete (Authentication System)
+**Current Status:** PR #3 Complete (Presence Awareness System)
 
 ---
 
@@ -138,33 +138,33 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [x] **Initialize Vite + React + TypeScript project**
+- [x] **Task 1: Initialize Vite + React + TypeScript project**
   - [x] Files: Create entire project structure
   - [x] Run: `npm create vite@latest collab-canvas -- --template react-ts`
   - [x] Configure Vite for React development
 
-- [x] **Install core dependencies**
+- [x] **Task 2: Install core dependencies**
   - [x] Files: `package.json`
   - [x] Install: `npm install react-konva konva`
   - [x] Install: `npm install firebase`
   - [x] Install: `npm install react-router-dom`
   - [x] Install dev dependencies: `npm install -D @types/react @types/react-dom`
 
-- [x] **Set up Firebase project**
+- [x] **Task 3: Set up Firebase project**
   - [x] Go to Firebase Console → Create new project
   - [x] Enable Firebase Realtime Database (not Firestore)
   - [x] Set Database rules to test mode (public read/write for MVP)
   - [x] Enable Firebase Authentication (Email/Password provider)
   - [x] Get Firebase config credentials
 
-- [x] **Create Firebase configuration**
+- [x] **Task 4: Create Firebase configuration**
   - [x] Files: `src/services/firebase.ts`, `.env.local`
   - [x] Initialize Firebase app with config object
   - [x] Initialize Realtime Database and Auth instances
   - [x] Export `database` and `auth` instances
   - [x] Use `VITE_` prefix for environment variables
 
-- [x] **Configure environment variables**
+- [x] **Task 5: Configure environment variables**
   - [x] Files: `.env.local`, `.gitignore`
   - [x] Add Firebase config with VITE_ prefix:
     - [x] `VITE_FIREBASE_API_KEY`
@@ -173,44 +173,44 @@ Following the "Start with the Hard Part" principle with regular deployments:
     - [x] `VITE_FIREBASE_PROJECT_ID`
   - [x] Ensure `.env.local` is in `.gitignore`
 
-- [x] **Set up project structure**
+- [x] **Task 6: Set up project structure**
   - [x] Files: Create any folders missing from structure above
   - [x] Create placeholder `index.ts` files in each folder
 
-- [x] **Configure TypeScript**
+- [x] **Task 7: Configure TypeScript**
   - [x] Files: `tsconfig.json`
   - [x] Ensure strict mode enabled
   - [x] Configure JSX for React
 
-- [x] **Create basic App shell with visible content**
+- [x] **Task 8: Create basic App shell with visible content**
   - [x] Files: `src/App.tsx`, `src/index.tsx`, `src/App.css`
   - [x] Display "CollabCanvas MVP" header
   - [x] Add basic routing structure (placeholder routes)
   - [x] Verify app displays in browser with `npm run dev`
 
-- [x] **Initialize Git repository**
+- [x] **Task 9: Initialize Git repository**
   - [x] Run: `git init`
   - [x] Files: `.gitignore`
   - [x] Include: `node_modules/`, `.env.local`, `dist/`
   - [x] Create initial commit
   - [x] Create GitHub repository and push
 
-- [x] **Set up Vercel deployment**
+- [x] **Task 10: Set up Vercel deployment**
   - [x] Connect Vercel to GitHub repository
   - [x] Framework Preset: Vite
   - [x] Build Command: `npm run build`
   - [x] Output Directory: `dist`
 
-- [x] **Configure Vercel environment variables**
+- [x] **Task 11: Configure Vercel environment variables**
   - [x] Add all VITE_FIREBASE_* variables to Vercel dashboard
   - [x] Deploy to production environment
 
-- [x] **Deploy to Vercel**
+- [x] **Task 12: Deploy to Vercel**
   - [x] Push to main branch → Vercel auto-deploys
   - [x] Verify "Hello World" loads at production URL
   - [x] No console errors
 
-- [x] **Configure Firebase for production**
+- [x] **Task 13: Configure Firebase for production**
   - [x] In Firebase Console: Authentication → Settings
   - [x] Add Vercel domain to Authorized domains
   - [x] Test Firebase connection from deployed app
@@ -230,13 +230,13 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [x] **Create user type definitions**
+- [x] **Task 1: Create user type definitions**
   - [x] Files: `src/types/user.types.ts`
   - [x] Define `User` interface: `{ id: string; email: string; displayName: string; color: string; }`
   - [x] Define `AuthState` type
   - [x] Note: Colors are randomly generated per session (no persistence required for MVP)
 
-- [x] **Build authentication service**
+- [x] **Task 2: Build authentication service**
   - [x] Files: `src/services/auth.service.ts`
   - [x] Import Firebase Auth from `src/services/firebase.ts`
   - [x] Function: `signUp(email, password, displayName)` - Create user account
@@ -244,14 +244,14 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [x] Function: `logOut()` - Sign out current user
   - [x] Function: `onAuthStateChanged(callback)` - Subscribe to auth changes
 
-- [x] **Create useAuth hook**
+- [x] **Task 3: Create useAuth hook**
   - [x] Files: `src/hooks/useAuth.ts`
   - [x] State: `currentUser`, `loading`
   - [x] Subscribe to Firebase auth state changes on mount
   - [x] Methods: wrap service functions for component use
   - [x] Return user state and methods
 
-- [x] **Build Login component**
+- [x] **Task 4: Build Login component**
   - [x] Files: `src/components/Auth/Login.tsx`
   - [x] Form with email and password inputs
   - [x] Submit button calls login function
@@ -259,7 +259,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [x] Display errors inline (no toasts needed)
   - [x] Navigate to `/canvas` on success
 
-- [x] **Build Signup component**
+- [x] **Task 5: Build Signup component**
   - [x] Files: `src/components/Auth/Signup.tsx`
   - [x] Form with email, password, display name inputs
   - [x] Submit button calls signup function
@@ -267,14 +267,14 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [x] Display errors inline
   - [x] Navigate to `/canvas` on success
 
-- [x] **Create AuthGuard component**
+- [x] **Task 6: Create AuthGuard component**
   - [x] Files: `src/components/Auth/AuthGuard.tsx`
   - [x] Check if user is authenticated
   - [x] Show loading state while checking
   - [x] Redirect to `/login` if not authenticated
   - [x] Render children if authenticated
 
-- [x] **Set up routing**
+- [x] **Task 7: Set up routing**
   - [x] Files: `src/App.tsx`
   - [x] Install: `npm install react-router-dom`
   - [x] Route `/login` → Login component
@@ -282,13 +282,13 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [x] Route `/canvas` → Canvas (wrapped in AuthGuard)
   - [x] Default route → redirect to `/canvas`
 
-- [x] **Add logout functionality**
+- [x] **Task 8: Add logout functionality**
   - [x] Files: `src/App.tsx`
   - [x] Add logout button in header when user is authenticated
   - [x] Call logout function on click
   - [x] Redirect to `/login` after logout
 
-- [x] **Test authentication flow locally**
+- [x] **Task 9: Test authentication flow locally**
   - [x] Create test account
   - [x] Log in and verify redirect to canvas
   - [x] Refresh page and verify session persists
@@ -313,64 +313,64 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Extend user type definitions**
-  - [ ] Files: `src/types/user.types.ts`
-  - [ ] Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; }`
-  - [ ] **REMEMBER:** Export interfaces (they're types, so consumers will use `import type`)
+- [x] **Task 1: Extend user type definitions**
+  - [x] Files: `src/types/user.types.ts`
+  - [x] Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; }`
+  - [x] **REMEMBER:** Export interfaces (they're types, so consumers will use `import type`)
 
-- [ ] **Build presence service**
-  - [ ] Files: `src/services/presence.service.ts`
-  - [ ] **Import types:** Use `import type` for User, PresenceUser
-  - [ ] **Firebase imports:** `import { ref, set, remove, onValue, onDisconnect } from 'firebase/database'`
-  - [ ] Use Firebase Realtime Database (not Firestore)
-  - [ ] Path: `/presence/{userId}`
-  - [ ] Function: `setUserOnline(userId, displayName, color)` - Set presence with onDisconnect
-  - [ ] Function: `setUserOffline(userId)` - Remove presence node
-  - [ ] Function: `subscribeToPresence(callback)` - Listen to all presence changes
-  - [ ] Use `onDisconnect().remove()` for automatic cleanup
+- [x] **Task 2: Build presence service**
+  - [x] Files: `src/services/presence.service.ts`
+  - [x] **Import types:** Use `import type` for User, PresenceUser
+  - [x] **Firebase imports:** `import { ref, set, remove, onValue, onDisconnect } from 'firebase/database'`
+  - [x] Use Firebase Realtime Database (not Firestore)
+  - [x] Path: `/presence/{userId}`
+  - [x] Function: `setUserOnline(userId, displayName, color)` - Set presence with onDisconnect
+  - [x] Function: `setUserOffline(userId)` - Remove presence node
+  - [x] Function: `subscribeToPresence(callback)` - Listen to all presence changes
+  - [x] Use `onDisconnect().remove()` for automatic cleanup
 
-- [ ] **Create usePresence hook**
-  - [ ] Files: `src/hooks/usePresence.ts`
-  - [ ] **Import types:** Use `import type` for PresenceUser
-  - [ ] State: `onlineUsers` array
-  - [ ] Set current user online on mount
-  - [ ] Subscribe to presence updates
-  - [ ] Clean up on unmount
-  - [ ] Return online users list
+- [x] **Task 3: Create usePresence hook**
+  - [x] Files: `src/hooks/usePresence.ts`
+  - [x] **Import types:** Use `import type` for PresenceUser
+  - [x] State: `onlineUsers` array
+  - [x] Set current user online on mount
+  - [x] Subscribe to presence updates
+  - [x] Clean up on unmount
+  - [x] Return online users list
 
-- [ ] **Create color utility**
-  - [ ] Files: `src/utils/colors.ts`
-  - [ ] Function: `getRandomColor()` - Returns hex color
-  - [ ] Array of 12 distinct colors
-  - [ ] Function to assign color to user
+- [x] **Task 4: Create color utility**
+  - [x] Files: `src/utils/colors.ts`
+  - [x] Function: `getRandomColor()` - Returns hex color
+  - [x] Array of 12 distinct colors
+  - [x] Function to assign color to user
 
-- [ ] **Build OnlineUsers component**
-  - [ ] Files: `src/components/Presence/OnlineUsers.tsx`
-  - [ ] **Import types:** Use `import type` for PresenceUser
-  - [ ] Display list of online users
-  - [ ] Show colored dot and display name
-  - [ ] Position in top-right corner
-  - [ ] Simple vertical list layout
+- [x] **Task 5: Build OnlineUsers component**
+  - [x] Files: `src/components/Presence/OnlineUsers.tsx`
+  - [x] **Import types:** Use `import type` for PresenceUser
+  - [x] Display list of online users
+  - [x] Show colored dot and display name
+  - [x] Position in top-right corner
+  - [x] Simple vertical list layout
 
-- [ ] **Build UserAvatar component**
-  - [ ] Files: `src/components/Presence/UserAvatar.tsx`
-  - [ ] **Import types:** Use `import type` for prop interface
-  - [ ] Props: `displayName`, `color`
-  - [ ] Display first letter in colored circle
-  - [ ] Reusable for presence list and future cursors
+- [x] **Task 6: Build UserAvatar component**
+  - [x] Files: `src/components/Presence/UserAvatar.tsx`
+  - [x] **Import types:** Use `import type` for prop interface
+  - [x] Props: `displayName`, `color`
+  - [x] Display first letter in colored circle
+  - [x] Reusable for presence list and future cursors
 
-- [ ] **Integrate presence into Canvas page**
-  - [ ] Files: Create `src/components/Canvas/Canvas.tsx` (placeholder for now)
-  - [ ] Use `usePresence()` hook
-  - [ ] Render `OnlineUsers` component
-  - [ ] Pass current user info to presence service
+- [x] **Task 7: Integrate presence into Canvas page**
+  - [x] Files: Create `src/components/Canvas/Canvas.tsx` (placeholder for now)
+  - [x] Use `usePresence()` hook
+  - [x] Render `OnlineUsers` component
+  - [x] Pass current user info to presence service
 
-- [ ] **Test presence system locally**
-  - [ ] Open app in 2 browser windows
-  - [ ] Log in with different accounts
-  - [ ] Verify both users appear in online list
-  - [ ] Close one browser → user disappears
-  - [ ] Firebase onDisconnect handles cleanup automatically
+- [x] **Task 8: Test presence system locally**
+  - [x] Open app in 2 browser windows
+  - [x] Log in with different accounts
+  - [x] Verify both users appear in online list
+  - [x] Close one browser → user disappears
+  - [x] Firebase onDisconnect handles cleanup automatically
 
 **Definition of Done:**
 - ✅ Online users list shows all active users
@@ -391,16 +391,16 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Create throttle utility**
+- [ ] **Task 1: Create throttle utility**
   - [ ] Files: `src/utils/throttle.ts`
   - [ ] Generic throttle function for rate limiting
   - [ ] Will limit cursor updates to 100ms intervals
 
-- [ ] **Create cursor type definitions**
+- [ ] **Task 2: Create cursor type definitions**
   - [ ] Files: `src/types/canvas.types.ts`
   - [ ] Define `CursorPosition`: `{ userId: string; x: number; y: number; displayName: string; color: string; }`
 
-- [ ] **Build cursor service**
+- [ ] **Task 3: Build cursor service**
   - [ ] Files: `src/services/cursor.service.ts`
   - [ ] Use Firebase Realtime Database
   - [ ] Path: `/cursors/{userId}`
@@ -409,7 +409,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Function: `removeCursor(userId)` - Delete on disconnect
   - [ ] Use `onDisconnect().remove()` for cleanup
 
-- [ ] **Create useCursors hook**
+- [ ] **Task 4: Create useCursors hook**
   - [ ] Files: `src/hooks/useCursors.ts`
   - [ ] Import throttle utility
   - [ ] State: `cursors` map (userId → CursorPosition)
@@ -418,7 +418,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Clean up cursor on unmount
   - [ ] Return cursors and update method
 
-- [ ] **Build Cursor component as Konva object**
+- [ ] **Task 5: Build Cursor component as Konva object**
   - [ ] Files: `src/components/Cursors/Cursor.tsx`
   - [ ] Render as Konva Group with:
     - [ ] Konva Arrow or custom shape for cursor
@@ -427,7 +427,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Position using Konva x/y props
   - [ ] Note: Konva handles transforms automatically
 
-- [ ] **Integrate cursors into Canvas**
+- [ ] **Task 6: Integrate cursors into Canvas**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] Set up basic Konva Stage and Layer
   - [ ] Add onMouseMove listener to Stage
@@ -436,14 +436,14 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Render Cursor components in Konva Layer
   - [ ] Filter out current user's cursor
 
-- [ ] **Test cursor synchronization**
+- [ ] **Task 7: Test cursor synchronization**
   - [ ] Open in 2 browsers
   - [ ] Move mouse and verify cursor appears in other browser
   - [ ] Verify name labels are correct
   - [ ] Check 100ms throttling is working
   - [ ] Test with 3+ users
 
-- [ ] **Deploy to Vercel**
+- [ ] **Task 8: Deploy to Vercel**
   - [ ] Commit and push all changes
   - [ ] Verify deployment succeeds
   - [ ] Test authentication on deployed URL
@@ -467,62 +467,62 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Define viewport types**
+- [ ] **Task 1: Define viewport types**
   - [ ] Files: `src/types/canvas.types.ts`
   - [ ] Add `ViewportState`: `{ x: number; y: number; scale: number; }`
   - [ ] Add `CanvasConfig` with dimensions
 
-- [ ] **Set up Konva Stage properly**
+- [ ] **Task 2: Set up Konva Stage properly**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] Configure Stage with viewport dimensions
   - [ ] Add Layer for canvas content
   - [ ] Set initial scale and position
 
-- [ ] **Implement pan functionality**
+- [ ] **Task 3: Implement pan functionality**
   - Files: `src/components/Canvas/Canvas.tsx`
   - Set Stage `draggable={true}` (Konva built-in)
   - Track stage position in state
   - Update viewport state on drag
 
-- [ ] **Implement zoom functionality**
+- [ ] **Task 4: Implement zoom functionality**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] Add wheel event listener to Stage
   - [ ] Calculate zoom toward mouse position
   - [ ] Update scale (min: 0.1, max: 3)
   - [ ] Update both scale and position for proper zoom
 
-- [ ] **Add viewport persistence**
+- [ ] **Task 5: Add viewport persistence**
   - [ ] Files: `src/hooks/useCanvas.ts`
   - [ ] Save viewport to localStorage on change
   - [ ] Load viewport from localStorage on mount
   - [ ] Key: `'canvasViewport'`
   - [ ] Debounce saves to reduce writes
 
-- [ ] **Create canvas utilities**
+- [ ] **Task 6: Create canvas utilities**
   - [ ] Files: `src/utils/canvas.utils.ts`
   - [ ] Function: `screenToCanvas(x, y, viewport)` - Convert coordinates
   - [ ] Function: `canvasToScreen(x, y, viewport)` - Convert back
   - [ ] These will be used for object placement
 
-- [ ] **Add canvas background**
+- [ ] **Task 7: Add canvas background**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] Add Konva Rect as background (5000x5000)
   - [ ] Light gray color (#f5f5f5)
   - [ ] Layer order: background → objects → cursors
 
-- [ ] **Update cursor positions for pan/zoom**
+- [ ] **Task 8: Update cursor positions for pan/zoom**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] Cursors already use stage coordinates
   - [ ] Verify cursors transform correctly with pan/zoom
   - [ ] No additional work needed (Konva handles it)
 
-- [ ] **Style canvas container**
+- [ ] **Task 9: Style canvas container**
   - [ ] Files: `src/components/Canvas/Canvas.css`
   - [ ] Set canvas to fill available space
   - [ ] Cursor styles for pan (grab/grabbing)
   - [ ] Overflow hidden
 
-- [ ] **Test pan and zoom**
+- [ ] **Task 10: Test pan and zoom**
   - [ ] Pan by dragging canvas
   - [ ] Zoom with mouse wheel
   - [ ] Verify zoom centers on cursor
@@ -544,12 +544,12 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Define object types**
+- [ ] **Task 1: Define object types**
   - [ ] Files: `src/types/object.types.ts`
   - [ ] Define `CanvasObject` base interface
   - [ ] Define `RectangleObject` with: `{ id, type: 'rectangle', x, y, width, height, color, lockedBy }`
 
-- [ ] **Build object service**
+- [ ] **Task 2: Build object service**
   - [ ] Files: `src/services/object.service.ts`
   - [ ] Use Firebase Realtime Database
   - [ ] Path: `/objects/{objectId}`
@@ -558,7 +558,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Function: `deleteObject(objectId)` - Remove object
   - [ ] Function: `subscribeToObjects(callback)` - Listen to changes
 
-- [ ] **Create useObjects hook**
+- [ ] **Task 3: Create useObjects hook**
   - [ ] Files: `src/hooks/useObjects.ts`
   - [ ] State: `objects` map, `selectedObjectId`
   - [ ] Subscribe to object updates
@@ -567,7 +567,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Method: `deselectObject()` - Clear selection
   - [ ] Return objects, selection, and methods
 
-- [ ] **Build CanvasObject component**
+- [ ] **Task 4: Build CanvasObject component**
   - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
   - [ ] Render Konva Rect
   - [ ] Props: `object`, `isSelected`, `onSelect`
@@ -575,18 +575,18 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Handle click for selection
   - [ ] Set draggable={false} for now
 
-- [ ] **Add creation mode toggle**
+- [ ] **Task 5: Add creation mode toggle**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] State: `isCreating` boolean
   - [ ] Toggle between "select" and "create" modes
 
-- [ ] **Build simple Toolbar**
+- [ ] **Task 6: Build simple Toolbar**
   - [ ] Files: `src/components/Canvas/Toolbar.tsx`
   - [ ] Button: "Add Rectangle" - toggles creation mode
   - [ ] Show current mode state
   - [ ] Position at top of canvas
 
-- [ ] **Implement rectangle creation**
+- [ ] **Task 7: Implement rectangle creation**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] When in creation mode:
     - [ ] Stage click creates rectangle at pointer position
@@ -596,19 +596,19 @@ Following the "Start with the Hard Part" principle with regular deployments:
     - [ ] Click on rectangle selects it
     - [ ] Click on empty space deselects
 
-- [ ] **Render objects from database**
+- [ ] **Task 8: Render objects from database**
   - [ ] Files: `src/components/Canvas/Canvas.tsx`
   - [ ] Map over objects from useObjects
   - [ ] Render CanvasObject for each
   - [ ] Layer order: background → objects → cursors
 
-- [ ] **Test object creation and sync**
+- [ ] **Task 9: Test object creation and sync**
   - [ ] Create rectangles in one browser
   - [ ] Verify they appear in other browser instantly
   - [ ] Test selection visual feedback
   - [ ] Create 10+ rectangles for performance check
 
-- [ ] **Deploy to Vercel**
+- [ ] **Task 10: Deploy to Vercel**
   - [ ] Commit and push changes
   - [ ] Verify deployment succeeds
   - [ ] Test rectangle creation on production
@@ -631,39 +631,39 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Implement object locking service functions**
+- [ ] **Task 1: Implement object locking service functions**
   - [ ] Files: `src/services/object.service.ts`
   - [ ] Function: `acquireLock(objectId, userId)` - Use transaction
   - [ ] Function: `releaseLock(objectId, userId)` - Clear lock
   - [ ] Implement with Firebase transaction for atomicity
 
-- [ ] **Add lock acquisition logic**
+- [ ] **Task 2: Add lock acquisition logic**
   - [ ] Files: `src/hooks/useObjects.ts`
   - [ ] Method: `lockObject(objectId)` - Try to acquire lock
   - [ ] Method: `unlockObject(objectId)` - Release lock
   - [ ] Return lock status with objects
 
-- [ ] **Enable dragging in CanvasObject**
+- [ ] **Task 3: Enable dragging in CanvasObject**
   - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
   - [ ] Props: add `isLocked`, `onDragStart`, `onDragEnd`
   - [ ] Set `draggable={!isLocked && isSelected}`
   - [ ] Different visual when locked by another user
 
-- [ ] **Handle drag start**
+- [ ] **Task 4: Handle drag start**
   - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
   - [ ] On dragStart: Call `onDragStart` prop
   - [ ] Parent attempts to acquire lock via transaction
   - [ ] If lock acquired: Allow drag
   - [ ] If lock failed: Cancel drag
 
-- [ ] **Handle drag end**
+- [ ] **Task 5: Handle drag end**
   - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
   - [ ] On dragEnd: Get new position from event
   - [ ] Call `onDragEnd` with new x, y
   - [ ] Parent updates object position in database
   - [ ] Release lock
 
-- [ ] **Implement transaction-based locking**
+- [ ] **Task 6: Implement transaction-based locking**
   - [ ] Files: `src/services/object.service.ts`
   - [ ] ```javascript
   const lockRef = database.ref(`/objects/${objectId}/lockedBy`);
@@ -673,24 +673,24 @@ Following the "Start with the Hard Part" principle with regular deployments:
   });
   ```
 
-- [ ] **Show locked object state**
+- [ ] **Task 7: Show locked object state**
   - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
   - [ ] If locked by another: Lower opacity or different stroke
   - [ ] Cursor changes to not-allowed when hovering
   - [ ] Cannot select if locked by another
 
-- [ ] **Update position in real-time**
+- [ ] **Task 8: Update position in real-time**
   - [ ] Files: `src/hooks/useObjects.ts`
   - [ ] Method: `moveObject(objectId, x, y)` - Update position
   - [ ] All clients receive position updates
   - [ ] Smooth visual update
 
-- [ ] **Handle lock cleanup on disconnect**
+- [ ] **Task 9: Handle lock cleanup on disconnect**
   - [ ] Files: `src/services/object.service.ts`
   - [ ] When acquiring lock: Set up onDisconnect to release
   - [ ] Prevents orphaned locks if user disconnects while dragging
 
-- [ ] **Test object movement and locking**
+- [ ] **Task 10: Test object movement and locking**
   - [ ] User A drags rectangle → User B sees it move
   - [ ] User A dragging → User B cannot select same rectangle
   - [ ] User A releases → User B can now drag
@@ -712,57 +712,57 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Verify Firebase persistence**
+- [ ] **Task 1: Verify Firebase persistence**
   - [ ] Files: Review all services
   - [ ] Confirm all creates/updates write to Realtime Database
   - [ ] Database handles persistence automatically
 
-- [ ] **Load initial canvas state**
+- [ ] **Task 2: Load initial canvas state**
   - [ ] Files: `src/hooks/useObjects.ts`
   - [ ] On mount: Fetch all existing objects
   - [ ] Subscribe to updates after initial load
   - [ ] New users see existing canvas state
 
-- [ ] **Verify viewport persistence**
+- [ ] **Task 3: Verify viewport persistence**
   - [ ] Files: `src/hooks/useCanvas.ts`
   - [ ] Confirm localStorage save/load works
   - [ ] Test: Refresh with custom zoom/pan → restores correctly
 
-- [ ] **Handle reconnection gracefully**
+- [ ] **Task 4: Handle reconnection gracefully**
   - [ ] Files: `src/hooks/usePresence.ts`
   - [ ] Re-establish presence on reconnect
   - [ ] Firebase Realtime Database handles this automatically
 
-- [ ] **Clean up locks on disconnect**
+- [ ] **Task 5: Clean up locks on disconnect**
   - [ ] Files: `src/services/object.service.ts`
   - [ ] Verify onDisconnect handlers work
   - [ ] Test: Close browser while dragging → lock released
 
-- [ ] **Test persistence scenarios**
+- [ ] **Task 6: Test persistence scenarios**
   - [ ] Create objects → refresh → objects persist
   - [ ] Custom viewport → refresh → viewport persists
   - [ ] All users leave → return → canvas unchanged
   - [ ] Disconnect mid-drag → object stays, lock released
 
-- [ ] **Add basic error handling**
+- [ ] **Task 7: Add basic error handling**
   - [ ] Files: All service files
   - [ ] Wrap database calls in try-catch
   - [ ] Log errors to console
   - [ ] Don't crash on network errors
 
-- [ ] **Performance check**
+- [ ] **Task 8: Performance check**
   - [ ] Create 20+ rectangles
   - [ ] Move objects rapidly
   - [ ] Verify no major lag
   - [ ] Test with 3+ concurrent users
 
-- [ ] **Final deployment to Vercel**
+- [ ] **Task 9: Final deployment to Vercel**
   - [ ] Commit all changes
   - [ ] Push to main branch
   - [ ] Verify build succeeds
   - [ ] No console errors in production
 
-- [ ] **Production testing**
+- [ ] **Task 10: Production testing**
   - [ ] Test all features on deployed URL
   - [ ] Multi-user collaboration test
   - [ ] Persistence test
@@ -784,12 +784,12 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Fix critical bugs found in testing**
+- [ ] **Task 1: Fix critical bugs found in testing**
   - [ ] Address any show-stopping issues
   - [ ] Focus only on bugs that break MVP requirements
   - [ ] Don't add features
 
-- [ ] **Create README documentation**
+- [ ] **Task 2: Create README documentation**
   - [ ] Files: `README.md`
   - [ ] Project description
   - [ ] Tech stack used
@@ -797,14 +797,14 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Deployed URL
   - [ ] Known limitations
 
-- [ ] **Record demo video**
+- [ ] **Task 3: Record demo video**
   - [ ] 3-5 minute demonstration
   - [ ] Show: Login, cursors, creating rectangles, moving objects, locking, persistence
   - [ ] Multiple browsers to show collaboration
   - [ ] Upload to YouTube/Loom
   - [ ] Add link to README
 
-- [ ] **Final testing checklist**
+- [ ] **Task 4: Final testing checklist**
   - [ ] 2+ users can see each other's cursors
   - [ ] Objects sync in real-time
   - [ ] Locking prevents conflicts
@@ -812,7 +812,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [ ] Viewport position saves
   - [ ] 5+ users work simultaneously
 
-- [ ] **Submit MVP**
+- [ ] **Task 5: Submit MVP**
   - [ ] Ensure deployed URL is accessible
   - [ ] GitHub repository is public
   - [ ] README has all required information

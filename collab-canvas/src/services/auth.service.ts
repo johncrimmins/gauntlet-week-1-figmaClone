@@ -15,6 +15,7 @@ import {
 } from 'firebase/auth';
 import { auth } from './firebase';
 import type { User } from '../types/user.types';
+import { getRandomColor } from '../utils/colors';
 
 /**
  * Creates a new user account with email, password, and display name
@@ -40,7 +41,7 @@ export async function signUp(
     });
 
     // Generate a random color for the user
-    const color = generateUserColor();
+    const color = getRandomColor();
 
     // Return the user object
     return {
@@ -70,7 +71,7 @@ export async function logIn(email: string, password: string): Promise<User> {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     
     // Generate a color for the user (will be consistent if stored, or new if not)
-    const color = generateUserColor();
+    const color = getRandomColor();
 
     return {
       id: userCredential.user.uid,
@@ -114,7 +115,7 @@ export function onAuthStateChanged(
 ): () => void {
   return firebaseOnAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
     if (firebaseUser) {
-      const color = generateUserColor();
+      const color = getRandomColor();
       const user: User = {
         id: firebaseUser.uid,
         email: firebaseUser.email!,
@@ -126,29 +127,5 @@ export function onAuthStateChanged(
       callback(null);
     }
   });
-}
-
-/**
- * Generates a random color for a user from a predefined palette
- * 
- * @returns Hex color string
- */
-function generateUserColor(): string {
-  const colors = [
-    '#FF6B6B', // Red
-    '#4ECDC4', // Teal
-    '#45B7D1', // Blue
-    '#FFA07A', // Light Salmon
-    '#98D8C8', // Mint
-    '#F7DC6F', // Yellow
-    '#BB8FCE', // Purple
-    '#85C1E2', // Sky Blue
-    '#F8B739', // Orange
-    '#52B788', // Green
-    '#E63946', // Crimson
-    '#457B9D', // Steel Blue
-  ];
-  
-  return colors[Math.floor(Math.random() * colors.length)];
 }
 
