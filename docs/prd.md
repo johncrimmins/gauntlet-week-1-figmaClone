@@ -185,14 +185,12 @@ Hosting: Vercel (frontend) + Firebase (backend)
 /presence/{userId}
   - displayName
   - color
-  - lastSeen
 
 /cursors/{userId}
   - x
   - y
   - displayName
   - color
-  - timestamp
 
 /objects/{objectId}
   - id
@@ -203,9 +201,6 @@ Hosting: Vercel (frontend) + Firebase (backend)
   - height
   - color
   - lockedBy (userId or null)
-  - createdBy
-  - createdAt
-  - updatedAt
 ```
 
 ### Critical Implementation Details
@@ -233,9 +228,9 @@ const [isCreating, setIsCreating] = useState(false);
 4. **Viewport Persistence:**
 ```javascript
 // Save on change
-localStorage.setItem('viewport', JSON.stringify({x, y, scale}));
+localStorage.setItem('canvasViewport', JSON.stringify({ x, y, scale }));
 // Load on mount
-const saved = JSON.parse(localStorage.getItem('viewport') || '{}');
+const saved = JSON.parse(localStorage.getItem('canvasViewport') || '{}');
 ```
 
 ---

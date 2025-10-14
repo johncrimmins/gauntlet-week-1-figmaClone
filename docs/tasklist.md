@@ -236,7 +236,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 - [ ] **Set up routing**
   - Files: `src/App.tsx`
-  - Install: `npm install react-router-dom @types/react-router-dom`
+- Install: `npm install react-router-dom`
   - Route `/login` → Login component
   - Route `/signup` → Signup component
   - Route `/canvas` → Canvas (wrapped in AuthGuard)
@@ -271,14 +271,14 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 - [ ] **Extend user type definitions**
   - Files: `src/types/user.types.ts`
-  - Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; isOnline: boolean; }`
+  - Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; }`
 
 - [ ] **Build presence service**
   - Files: `src/services/presence.service.ts`
   - Use Firebase Realtime Database (not Firestore)
   - Path: `/presence/{userId}`
   - Function: `setUserOnline(userId, displayName, color)` - Set presence with onDisconnect
-  - Function: `setUserOffline(userId)` - Mark user offline
+  - Function: `setUserOffline(userId)` - Remove presence node
   - Function: `subscribeToPresence(callback)` - Listen to all presence changes
   - Use `onDisconnect().remove()` for automatic cleanup
 
@@ -801,16 +801,13 @@ Before marking any PR with deployment as complete:
 ```javascript
 {
   "presence": {
-    "userId1": { displayName, color, isOnline },
-    "userId2": { ... }
+    "{userId}": { displayName, color }
   },
   "cursors": {
-    "userId1": { x, y, displayName, color },
-    "userId2": { ... }
+    "{userId}": { x, y, displayName, color }
   },
   "objects": {
-    "objectId1": { id, type, x, y, width, height, color, lockedBy },
-    "objectId2": { ... }
+    "{objectId}": { id, type, x, y, width, height, color, lockedBy }
   }
 }
 ```

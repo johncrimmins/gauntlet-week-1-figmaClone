@@ -5,17 +5,26 @@ graph TB
                 Login(Login Component)
                 Signup(Signup Component)
                 Canvas(Canvas Component)
+            end
+
+            subgraph "Auth Components"
                 AuthGuard(AuthGuard)
             end
-            
+
             subgraph "Canvas Components"
                 Toolbar(Toolbar)
                 CanvasObject(CanvasObject)
-                Cursor(Cursor Component)
+            end
+
+            subgraph "Presence Components"
                 OnlineUsers(OnlineUsers)
                 UserAvatar(UserAvatar)
             end
-            
+
+            subgraph "Cursor Components"
+                Cursor(Cursor Component)
+            end
+
             subgraph "React Hooks"
                 useAuth(useAuth)
                 usePresence(usePresence)
@@ -23,20 +32,20 @@ graph TB
                 useObjects(useObjects)
                 useCanvas(useCanvas)
             end
-            
+
             subgraph "Services Layer"
                 authService(auth.service)
                 presenceService(presence.service)
                 cursorService(cursor.service)
                 objectService(object.service)
             end
-            
+
             subgraph "Utils"
                 throttle(throttle)
                 colors(colors)
                 canvasUtils(canvas.utils)
             end
-            
+
             subgraph "Konva.js"
                 Stage(Konva Stage)
                 Layer(Konva Layer)
@@ -44,29 +53,29 @@ graph TB
                 Group(Konva Group)
             end
         end
-        
-        LocalStorage[(localStorage<br/>viewport)]
+
+        LocalStorage[(localStorage<br/>canvasViewport)]
     end
-    
+
     subgraph "Firebase Backend"
         subgraph "Firebase Services"
             FirebaseAuth(Firebase Auth<br/>Email/Password)
             RTDB(Firebase Realtime Database)
         end
-        
+
         subgraph "Database Structure"
-            presence(presence/userId<br/>displayName, color, isOnline)
+            presence(presence/userId<br/>displayName, color)
             cursors(cursors/userId<br/>x, y, displayName, color)
             objects(objects/objectId<br/>id, type, x, y, width,<br/>height, color, lockedBy)
         end
-        
+
         onDisconnect(onDisconnect<br/>Cleanup Handler)
     end
-    
+
     subgraph "Hosting"
         Vercel(Vercel<br/>Frontend Hosting)
     end
-    
+
     %% Authentication Flow
     Login -->|email/password| authService
     Signup -->|create account| authService
@@ -74,7 +83,7 @@ graph TB
     FirebaseAuth -->|session| useAuth
     useAuth -->|user state| AuthGuard
     AuthGuard -->|protect| Canvas
-    
+
     %% Presence Flow
     Canvas -->|mount| usePresence
     usePresence -->|set online| presenceService
@@ -82,8 +91,8 @@ graph TB
     presence -->|realtime| presenceService
     presenceService -->|updates| usePresence
     usePresence -->|online users| OnlineUsers
-    onDisconnect -->|cleanup| presence
-    
+    onDisconnect -->|cleanup (remove node)| presence
+
     %% Cursor Flow
     Stage -->|onMouseMove| Canvas
     Canvas -->|throttle 100ms| useCursors
@@ -93,9 +102,9 @@ graph TB
     cursorService -->|updates| useCursors
     useCursors -->|cursor data| Cursor
     Cursor -->|render in| Layer
-    onDisconnect -->|cleanup| cursors
+    onDisconnect -->|cleanup (remove node)| cursors
     throttle -->|rate limit| useCursors
-    
+
     %% Object Flow
     Toolbar -->|create mode| Canvas
     Canvas -->|click to create| useObjects
@@ -105,7 +114,7 @@ graph TB
     objectService -->|updates| useObjects
     useObjects -->|object data| CanvasObject
     CanvasObject -->|render as| Rect
-    
+
     %% Object Locking
     CanvasObject -->|onDragStart| useObjects
     useObjects -->|acquire lock| objectService
@@ -114,35 +123,35 @@ graph TB
     CanvasObject -->|onDragEnd| useObjects
     useObjects -->|release lock| objectService
     onDisconnect -->|release locks| objects
-    
+
     %% Canvas Rendering
     Canvas -->|contains| Stage
     Stage -->|contains| Layer
     Layer -->|renders| Rect
     Layer -->|renders| Group
     Group -->|contains| Cursor
-    
+
     %% Viewport Persistence
     Canvas -->|pan/zoom| useCanvas
     useCanvas -->|save viewport| LocalStorage
     LocalStorage -->|restore on load| useCanvas
     useCanvas -->|apply transform| Stage
-    
+
     %% Utilities
-    colors -->|random color| usePresence
+    colors -->|user color| usePresence
     colors -->|user color| useCursors
     canvasUtils -->|coordinate transform| Canvas
-    
+
     %% Deployment
     Vercel -->|serves| Canvas
     Vercel -->|env vars| FirebaseAuth
     Vercel -->|env vars| RTDB
-    
+
     %% Real-time Subscriptions
     RTDB -.->|subscribe| presenceService
     RTDB -.->|subscribe| cursorService
     RTDB -.->|subscribe| objectService
-    
+
     style Canvas fill:#e1f5fe
     style RTDB fill:#fff3e0
     style FirebaseAuth fill:#fff3e0
