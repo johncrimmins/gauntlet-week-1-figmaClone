@@ -8,14 +8,18 @@
 
 import { useAuth } from '../../hooks/useAuth';
 import { usePresence } from '../../hooks/usePresence';
+import { useCursors } from '../../hooks/useCursors';
 import { OnlineUsers } from '../Presence/OnlineUsers';
+import { Cursor } from '../Cursors/Cursor';
+import { Stage, Layer } from 'react-konva';
+import type { KonvaEventObject } from 'konva/lib/Node';
 import './Canvas.css';
 
 /**
  * Main canvas component for collaborative editing
  * 
- * Displays the canvas workspace with integrated presence awareness.
- * Future PRs will add Konva stage, cursors, and objects.
+ * Displays the canvas workspace with integrated presence awareness and
+ * real-time multiplayer cursors using Konva.
  * 
  * @example
  * <Canvas />
@@ -27,6 +31,11 @@ export function Canvas() {
     currentUser?.displayName || null,
     currentUser?.color || null
   );
+  const { cursors, updateMyCursor } = useCursors(
+    currentUser?.id || null,
+    currentUser?.displayName || null,
+    currentUser?.color || null
+  );
 
   async function handleLogout() {
     try {
@@ -34,6 +43,20 @@ export function Canvas() {
     } catch (error) {
       console.error('Logout failed:', error);
     }
+  }
+
+  /**
+   * Handles mouse movement on the canvas stage
+   * Updates the current user's cursor position (throttled to 100ms)
+   */
+  function handleMouseMove(e: KonvaEventObject<MouseEvent>) {
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const pointerPosition = stage.getPointerPosition();
+    if (!pointerPosition) return;
+
+    updateMyCursor(pointerPosition.x, pointerPosition.y);
   }
 
   return (
@@ -59,17 +82,31 @@ export function Canvas() {
       {/* Online users list */}
       <OnlineUsers users={onlineUsers} />
 
-      {/* Canvas workspace (placeholder for now) */}
+      {/* Canvas workspace with Konva Stage */}
       <div className="canvas-workspace">
-        <div className="canvas-placeholder">
-          <h2>Canvas</h2>
-          <p>Canvas component with Konva coming in PR #5</p>
-          <p>Real-time collaborative canvas will be here!</p>
-          <div className="canvas-presence-info">
-            <p><strong>Presence System Active:</strong></p>
-            <p>{onlineUsers.length} user(s) online</p>
-          </div>
-        </div>
+        <Stage
+          width={window.innerWidth}
+          height={window.innerHeight - 80}
+          onMouseMove={handleMouseMove}
+        >
+          <Layer>
+            {/* Render all cursors except the current user's cursor */}
+            {Object.entries(cursors).map(([id, cursor]) => {
+              // Don't render own cursor
+              if (id === currentUser?.id) return null;
+              
+              return (
+                <Cursor
+                  key={id}
+                  x={cursor.x}
+                  y={cursor.y}
+                  displayName={cursor.displayName}
+                  color={cursor.color}
+                />
+              );
+            })}
+          </Layer>
+        </Stage>
       </div>
     </div>
   );

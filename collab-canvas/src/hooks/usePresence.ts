@@ -60,12 +60,10 @@ export function usePresence(
       setOnlineUsers(users);
     });
 
-    // Cleanup: Set user offline and unsubscribe
+    // Cleanup: Only unsubscribe - onDisconnect handles presence removal automatically
+    // Manual removal here causes PERMISSION_DENIED errors and conflicts with onDisconnect
     return () => {
       unsubscribe();
-      presenceService.setUserOffline(userId).catch((error) => {
-        console.error('Failed to set user offline:', error);
-      });
     };
   }, [userId, displayName, color]);
 
