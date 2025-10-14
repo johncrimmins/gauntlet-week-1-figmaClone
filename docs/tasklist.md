@@ -2,7 +2,7 @@
 
 **Project:** Real-time Collaborative Canvas  
 **Stack:** React + Konva.js + TypeScript + Firebase Realtime Database + Vercel  
-**Last Updated:** October 13, 2025
+**Last Updated:** October 14, 2025
 
 ---
 
@@ -10,8 +10,8 @@
 
 As you complete each PR, update this section:
 
-- [ ] PR #1: Project Setup & Initial Deployment
-- [ ] PR #2: Authentication System
+- [x] PR #1: Project Setup & Initial Deployment
+- [x] PR #2: Authentication System
 - [ ] PR #3: Presence Awareness System
 - [ ] PR #4: Multiplayer Cursors & Deploy
 - [ ] PR #5: Basic Canvas with Pan/Zoom
@@ -20,7 +20,46 @@ As you complete each PR, update this section:
 - [ ] PR #8: State Persistence & Final Deploy
 - [ ] PR #9: Bug Fixes & Documentation
 
-**Current Status:** Not Started
+**Current Status:** PR #2 Complete (Authentication System)
+
+---
+
+## ⚠️ IMPORTANT: TypeScript Import Rules
+
+Our project uses `verbatimModuleSyntax: true` in TypeScript configuration. This requires:
+
+**✅ ALWAYS use `type` keyword for type-only imports:**
+- `import type { User } from './types'`
+- `import { useState, type FormEvent } from 'react'`
+
+**Common imports that need `type` keyword:**
+- Firebase: `import { type User as FirebaseUser } from 'firebase/auth'`
+- React types: `import type { ReactNode, FormEvent } from 'react'`
+- Custom types: `import type { User, AuthState } from './types'`
+
+**See `docs/learnings.md` for detailed examples and troubleshooting.**
+
+---
+
+## Debugging Checklist (If facing issues implementing Any PR)
+
+Double check these if you are running into errors before attempting to plan any other debugging:
+
+1. **Review `docs/learnings.md`** for known issues and patterns
+2. **Check import requirements:**
+   - Will you import types? Use `import type`
+   - Will you import React types? Use `import type`
+   - Will you import Firebase types? Use `import { type X }`
+3. **Plan error handling** using established patterns
+4. **Remember to run:**
+   - `npm run build` (catches TypeScript errors)
+   - `npm run lint` (catches code style issues)
+   - Browser test (catches runtime errors)
+
+**When in doubt, check existing working files as examples:**
+- Type imports: `src/services/auth.service.ts`
+- Hook patterns: `src/hooks/useAuth.ts`
+- Component patterns: `src/components/Auth/Login.tsx`
 
 ---
 
@@ -191,68 +230,69 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Create user type definitions**
-  - [ ] Files: `src/types/user.types.ts`
-  - [ ] Define `User` interface: `{ id: string; email: string; displayName: string; color: string; }`
-  - [ ] Define `AuthState` type
+- [x] **Create user type definitions**
+  - [x] Files: `src/types/user.types.ts`
+  - [x] Define `User` interface: `{ id: string; email: string; displayName: string; color: string; }`
+  - [x] Define `AuthState` type
+  - [x] Note: Colors are randomly generated per session (no persistence required for MVP)
 
-- [ ] **Build authentication service**
-  - [ ] Files: `src/services/auth.service.ts`
-  - [ ] Import Firebase Auth from `src/services/firebase.ts`
-  - [ ] Function: `signUp(email, password, displayName)` - Create user account
-  - [ ] Function: `logIn(email, password)` - Sign in user
-  - [ ] Function: `logOut()` - Sign out current user
-  - [ ] Function: `onAuthStateChanged(callback)` - Subscribe to auth changes
+- [x] **Build authentication service**
+  - [x] Files: `src/services/auth.service.ts`
+  - [x] Import Firebase Auth from `src/services/firebase.ts`
+  - [x] Function: `signUp(email, password, displayName)` - Create user account
+  - [x] Function: `logIn(email, password)` - Sign in user
+  - [x] Function: `logOut()` - Sign out current user
+  - [x] Function: `onAuthStateChanged(callback)` - Subscribe to auth changes
 
-- [ ] **Create useAuth hook**
-  - [ ] Files: `src/hooks/useAuth.ts`
-  - [ ] State: `currentUser`, `loading`
-  - [ ] Subscribe to Firebase auth state changes on mount
-  - [ ] Methods: wrap service functions for component use
-  - [ ] Return user state and methods
+- [x] **Create useAuth hook**
+  - [x] Files: `src/hooks/useAuth.ts`
+  - [x] State: `currentUser`, `loading`
+  - [x] Subscribe to Firebase auth state changes on mount
+  - [x] Methods: wrap service functions for component use
+  - [x] Return user state and methods
 
-- [ ] **Build Login component**
-  - [ ] Files: `src/components/Auth/Login.tsx`
-  - [ ] Form with email and password inputs
-  - [ ] Submit button calls login function
-  - [ ] Link to signup page
-  - [ ] Display errors inline (no toasts needed)
-  - [ ] Navigate to `/canvas` on success
+- [x] **Build Login component**
+  - [x] Files: `src/components/Auth/Login.tsx`
+  - [x] Form with email and password inputs
+  - [x] Submit button calls login function
+  - [x] Link to signup page
+  - [x] Display errors inline (no toasts needed)
+  - [x] Navigate to `/canvas` on success
 
-- [ ] **Build Signup component**
-  - [ ] Files: `src/components/Auth/Signup.tsx`
-  - [ ] Form with email, password, display name inputs
-  - [ ] Submit button calls signup function
-  - [ ] Link to login page
-  - [ ] Display errors inline
-  - [ ] Navigate to `/canvas` on success
+- [x] **Build Signup component**
+  - [x] Files: `src/components/Auth/Signup.tsx`
+  - [x] Form with email, password, display name inputs
+  - [x] Submit button calls signup function
+  - [x] Link to login page
+  - [x] Display errors inline
+  - [x] Navigate to `/canvas` on success
 
-- [ ] **Create AuthGuard component**
-  - [ ] Files: `src/components/Auth/AuthGuard.tsx`
-  - [ ] Check if user is authenticated
-  - [ ] Show loading state while checking
-  - [ ] Redirect to `/login` if not authenticated
-  - [ ] Render children if authenticated
+- [x] **Create AuthGuard component**
+  - [x] Files: `src/components/Auth/AuthGuard.tsx`
+  - [x] Check if user is authenticated
+  - [x] Show loading state while checking
+  - [x] Redirect to `/login` if not authenticated
+  - [x] Render children if authenticated
 
-- [ ] **Set up routing**
-  - [ ] Files: `src/App.tsx`
-  - [ ] Install: `npm install react-router-dom`
-  - [ ] Route `/login` → Login component
-  - [ ] Route `/signup` → Signup component
-  - [ ] Route `/canvas` → Canvas (wrapped in AuthGuard)
-  - [ ] Default route → redirect to `/canvas`
+- [x] **Set up routing**
+  - [x] Files: `src/App.tsx`
+  - [x] Install: `npm install react-router-dom`
+  - [x] Route `/login` → Login component
+  - [x] Route `/signup` → Signup component
+  - [x] Route `/canvas` → Canvas (wrapped in AuthGuard)
+  - [x] Default route → redirect to `/canvas`
 
-- [ ] **Add logout functionality**
-  - [ ] Files: `src/App.tsx`
-  - [ ] Add logout button in header when user is authenticated
-  - [ ] Call logout function on click
-  - [ ] Redirect to `/login` after logout
+- [x] **Add logout functionality**
+  - [x] Files: `src/App.tsx`
+  - [x] Add logout button in header when user is authenticated
+  - [x] Call logout function on click
+  - [x] Redirect to `/login` after logout
 
-- [ ] **Test authentication flow locally**
-  - [ ] Create test account
-  - [ ] Log in and verify redirect to canvas
-  - [ ] Refresh page and verify session persists
-  - [ ] Log out and verify redirect to login
+- [x] **Test authentication flow locally**
+  - [x] Create test account
+  - [x] Log in and verify redirect to canvas
+  - [x] Refresh page and verify session persists
+  - [x] Log out and verify redirect to login
 
 **Definition of Done:**
 - ✅ Users can sign up with email/password
@@ -260,6 +300,10 @@ Following the "Start with the Hard Part" principle with regular deployments:
 - ✅ Session persists across page refreshes
 - ✅ Canvas route requires authentication
 - ✅ Logout clears session and redirects
+- ✅ `npm run build` completes without errors
+- ✅ `npm run lint` shows no errors
+- ✅ No console errors in browser
+- ✅ All type imports use `type` keyword where required
 
 ---
 
@@ -272,9 +316,12 @@ Following the "Start with the Hard Part" principle with regular deployments:
 - [ ] **Extend user type definitions**
   - [ ] Files: `src/types/user.types.ts`
   - [ ] Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; }`
+  - [ ] **REMEMBER:** Export interfaces (they're types, so consumers will use `import type`)
 
 - [ ] **Build presence service**
   - [ ] Files: `src/services/presence.service.ts`
+  - [ ] **Import types:** Use `import type` for User, PresenceUser
+  - [ ] **Firebase imports:** `import { ref, set, remove, onValue, onDisconnect } from 'firebase/database'`
   - [ ] Use Firebase Realtime Database (not Firestore)
   - [ ] Path: `/presence/{userId}`
   - [ ] Function: `setUserOnline(userId, displayName, color)` - Set presence with onDisconnect
@@ -284,6 +331,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 - [ ] **Create usePresence hook**
   - [ ] Files: `src/hooks/usePresence.ts`
+  - [ ] **Import types:** Use `import type` for PresenceUser
   - [ ] State: `onlineUsers` array
   - [ ] Set current user online on mount
   - [ ] Subscribe to presence updates
@@ -298,6 +346,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 - [ ] **Build OnlineUsers component**
   - [ ] Files: `src/components/Presence/OnlineUsers.tsx`
+  - [ ] **Import types:** Use `import type` for PresenceUser
   - [ ] Display list of online users
   - [ ] Show colored dot and display name
   - [ ] Position in top-right corner
@@ -305,6 +354,7 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 - [ ] **Build UserAvatar component**
   - [ ] Files: `src/components/Presence/UserAvatar.tsx`
+  - [ ] **Import types:** Use `import type` for prop interface
   - [ ] Props: `displayName`, `color`
   - [ ] Display first letter in colored circle
   - [ ] Reusable for presence list and future cursors
@@ -328,6 +378,10 @@ Following the "Start with the Hard Part" principle with regular deployments:
 - ✅ Users disappear when they disconnect
 - ✅ Firebase onDisconnect prevents ghost users
 - ✅ Real-time updates across all clients
+- ✅ `npm run build` completes without errors
+- ✅ `npm run lint` shows no errors
+- ✅ No console errors in browser
+- ✅ All type imports use `type` keyword where required
 
 ---
 

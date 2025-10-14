@@ -99,13 +99,14 @@ Hosting: Vercel (frontend) + Firebase (backend)
 #### 2b. Multiplayer Cursors
 - **Real-time cursor positions** rendered as Konva objects
 - **Name labels** on each cursor
-- **Distinct colors** per user
+- **Distinct colors** per user (randomly assigned, no persistence required for MVP)
 - **100ms throttling** to balance smoothness with database limits
 
 **Definition of Done:**
 - Cursor positions update in real-time
 - Each user sees all other users' cursors
 - Cursors transform correctly with pan/zoom
+- Note: User colors may change between sessions (acceptable for MVP)
 
 #### 2c. Object Synchronization
 - **Broadcast object creation** to all clients
