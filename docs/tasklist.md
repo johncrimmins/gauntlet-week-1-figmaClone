@@ -156,25 +156,25 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - [x] Create initial commit
   - [x] Create GitHub repository and push
 
-- [ ] **Set up Vercel deployment**
-  - [ ] Connect Vercel to GitHub repository
-  - [ ] Framework Preset: Vite
-  - [ ] Build Command: `npm run build`
-  - [ ] Output Directory: `dist`
+- [x] **Set up Vercel deployment**
+  - [x] Connect Vercel to GitHub repository
+  - [x] Framework Preset: Vite
+  - [x] Build Command: `npm run build`
+  - [x] Output Directory: `dist`
 
-- [ ] **Configure Vercel environment variables**
-  - [ ] Add all VITE_FIREBASE_* variables to Vercel dashboard
-  - [ ] Deploy to production environment
+- [x] **Configure Vercel environment variables**
+  - [x] Add all VITE_FIREBASE_* variables to Vercel dashboard
+  - [x] Deploy to production environment
 
-- [ ] **Deploy to Vercel**
-  - [ ] Push to main branch → Vercel auto-deploys
-  - [ ] Verify "Hello World" loads at production URL
-  - [ ] No console errors
+- [x] **Deploy to Vercel**
+  - [x] Push to main branch → Vercel auto-deploys
+  - [x] Verify "Hello World" loads at production URL
+  - [x] No console errors
 
-- [ ] **Configure Firebase for production**
-  - [ ] In Firebase Console: Authentication → Settings
-  - [ ] Add Vercel domain to Authorized domains
-  - [ ] Test Firebase connection from deployed app
+- [x] **Configure Firebase for production**
+  - [x] In Firebase Console: Authentication → Settings
+  - [x] Add Vercel domain to Authorized domains
+  - [x] Test Firebase connection from deployed app
 
 **Definition of Done:**
 - ✅ Local dev server runs (`npm run dev`)
