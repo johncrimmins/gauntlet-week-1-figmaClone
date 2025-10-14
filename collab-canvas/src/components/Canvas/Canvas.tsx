@@ -13,6 +13,8 @@ import { OnlineUsers } from '../Presence/OnlineUsers';
 import { Cursor } from '../Cursors/Cursor';
 import { Stage, Layer } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
+import * as presenceService from '../../services/presence.service';
+import * as cursorService from '../../services/cursor.service';
 import './Canvas.css';
 
 /**
@@ -37,8 +39,23 @@ export function Canvas() {
     currentUser?.color || null
   );
 
+  /**
+   * Handles user logout with proper cleanup
+   * 
+   * Manually removes presence and cursor data BEFORE logout redirect.
+   * This is necessary because onDisconnect only fires on network disconnection,
+   * not on intentional logout (where connection is still active).
+   */
   async function handleLogout() {
     try {
+      // Manually clean up presence and cursor before logout
+      // onDisconnect doesn't fire for intentional logout (connection still active)
+      if (currentUser?.id) {
+        await presenceService.setUserOffline(currentUser.id);
+        await cursorService.removeCursor(currentUser.id);
+      }
+      
+      // Then perform the actual logout (which redirects to /login)
       await logOut();
     } catch (error) {
       console.error('Logout failed:', error);

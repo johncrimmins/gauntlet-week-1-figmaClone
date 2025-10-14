@@ -263,9 +263,234 @@ Before considering any feature complete:
 
 ---
 
+## PR #4: Multiplayer Cursors & Deploy
+
+### Issue #1: Performance Lag from Repeated onDisconnect Calls
+
+**Date:** October 14, 2025  
+**Severity:** Critical (Performance degradation)
+
+#### Problem
+
+Multiplayer cursors were working but experiencing noticeable lag. Cursor movements were somewhat smooth but had a delayed, sluggish feel. Console showed no errors initially during normal operation.
+
+#### Root Cause
+
+The `updateCursorPosition()` function was calling `onDisconnect().remove()` **on every single cursor update** (10 times per second per user):
+
+```typescript
+// ❌ BAD: Called every 100ms
+export async function updateCursorPosition(...) {
+  const cursorRef = ref(database, `cursors/${userId}`);
+  await onDisconnect(cursorRef).remove();  // Performance killer!
+  await set(cursorRef, { ... });
+}
+```
+
+This created massive overhead:
+- 10 onDisconnect registrations per second per user
+- Each registration requires a Firebase round-trip
+- Accumulated latency caused the lag
+
+#### Solution
+
+Separate the one-time initialization from the frequent updates:
+
+```typescript
+// ✅ GOOD: Call ONCE when user joins
+export async function initializeCursor(userId: string) {
+  const cursorRef = ref(database, `cursors/${userId}`);
+  await onDisconnect(cursorRef).remove();
+}
+
+// ✅ GOOD: Called frequently without onDisconnect overhead
+export async function updateCursorPosition(...) {
+  const cursorRef = ref(database, `cursors/${userId}`);
+  await set(cursorRef, { ... });  // Just update position
+}
+```
+
+In the hook:
+```typescript
+useEffect(() => {
+  // Initialize ONCE
+  cursorService.initializeCursor(userId);
+  
+  // Subscribe to updates
+  const unsubscribe = cursorService.subscribeToCursors(callback);
+  
+  return () => unsubscribe();
+}, [userId, displayName, color]);
+```
+
+#### Files Fixed
+
+1. `src/services/cursor.service.ts` - Split into initializeCursor() and updateCursorPosition()
+2. `src/hooks/useCursors.ts` - Call initializeCursor() once in useEffect
+
+---
+
+### Issue #2: PERMISSION_DENIED Errors on Cleanup
+
+**Date:** October 14, 2025  
+**Severity:** High (Console errors, potential data inconsistency)
+
+#### Problem
+
+Console showed repeated PERMISSION_DENIED errors when users navigated away or closed the browser:
+
+```
+Failed to set user offline: Error: PERMISSION_DENIED: Permission denied
+Failed to remove cursor: Error: PERMISSION_DENIED: Permission denied
+```
+
+#### Root Cause
+
+Both the manual cleanup functions AND Firebase's `onDisconnect` handlers were trying to remove the same data simultaneously, creating a race condition:
+
+```typescript
+// ❌ BAD: Conflicts with onDisconnect
+return () => {
+  unsubscribe();
+  presenceService.setUserOffline(userId);  // Conflicts!
+  cursorService.removeCursor(userId);      // Conflicts!
+};
+```
+
+Firebase's `onDisconnect` handlers trigger automatically when the connection drops, but the React cleanup functions also tried to manually remove the data, leading to permission conflicts.
+
+#### Solution
+
+Trust Firebase's `onDisconnect` to handle cleanup automatically. Remove manual cleanup calls:
+
+```typescript
+// ✅ GOOD: Only unsubscribe, let onDisconnect handle data removal
+return () => {
+  unsubscribe();
+  // onDisconnect automatically removes presence/cursor data
+};
+```
+
+**Rationale:**
+- `onDisconnect().remove()` is specifically designed for this use case
+- It handles network failures, browser crashes, and clean disconnects
+- Manual removal is redundant and causes conflicts
+
+#### Files Fixed
+
+1. `src/hooks/usePresence.ts` - Removed manual `setUserOffline()` call
+2. `src/hooks/useCursors.ts` - Removed manual `removeCursor()` call
+
+#### Prevention
+
+**Rule:** When using Firebase `onDisconnect()`:
+- ✅ Set it up ONCE during initialization
+- ✅ Let it handle all cleanup automatically
+- ❌ Don't manually remove data in React cleanup functions
+- ❌ Don't call onDisconnect on every update
+
+#### Testing Verification
+
+After fixes:
+- ✅ Cursor movements should be significantly smoother
+- ✅ No PERMISSION_DENIED errors in console
+- ✅ Users disappear from presence list immediately on disconnect
+- ✅ Cursors disappear when users close browser
+
+---
+
+### Issue #3: Ghost Users on Logout
+
+**Date:** October 14, 2025  
+**Severity:** Medium (Functional bug)
+
+#### Problem
+
+When users clicked the "Logout" button, they remained in the online users list (ghost users). The issue occurred on both localhost and production deployment.
+
+#### Root Cause
+
+`onDisconnect()` only fires on **network disconnection**, not on intentional logout actions:
+
+**What onDisconnect handles:**
+- ✅ Browser/tab closes
+- ✅ Network connection drops
+- ✅ Page crashes
+- ❌ **Logout button clicks** (connection still active!)
+
+When a user logs out:
+1. Logout button clicked
+2. Auth service signs out
+3. User redirected to `/login`
+4. Canvas component unmounts
+5. Firebase connection **still active** - no disconnect event
+6. onDisconnect never fires → user stays in database
+
+#### Solution
+
+Manually clean up presence and cursor data **before** the logout redirect:
+
+```typescript
+// In Canvas.tsx handleLogout
+async function handleLogout() {
+  try {
+    // Manual cleanup BEFORE logout (connection still active)
+    if (currentUser?.id) {
+      await presenceService.setUserOffline(currentUser.id);
+      await cursorService.removeCursor(currentUser.id);
+    }
+    
+    // Then logout (which redirects)
+    await logOut();
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+}
+```
+
+**Why this works:**
+- Cleanup happens while connection is still active
+- Executes before redirect/unmount
+- Doesn't conflict with onDisconnect (onDisconnect is a fallback)
+- Immediate removal from online users list
+
+#### Files Fixed
+
+1. `src/components/Canvas/Canvas.tsx` - Added manual cleanup in handleLogout()
+
+#### Prevention
+
+**Rule:** Firebase `onDisconnect()` cleanup pattern:
+- ✅ Use `onDisconnect()` for network disconnections (crash, close tab)
+- ✅ Use manual cleanup for intentional user actions (logout, leave room)
+- ✅ Cleanup **before** redirects/unmounts, not during
+- ❌ Don't rely solely on onDisconnect for all cleanup scenarios
+
+**The Complete Pattern:**
+
+```typescript
+// Setup: Called once on join
+await onDisconnect(ref).remove();  // Handles crashes/closes
+
+// Cleanup: Called on intentional logout
+await remove(ref);  // Handles explicit user actions
+```
+
+#### Testing Verification
+
+After fix:
+- ✅ User clicks logout → immediately removed from online users list
+- ✅ User closes tab → onDisconnect removes them automatically
+- ✅ No ghost users in either scenario
+- ✅ Works on both localhost and production
+
+---
+
 ## Version History
 
 - **v1.0** - October 14, 2025 - Initial learnings from PR #2 (Authentication System)
+- **v1.1** - October 14, 2025 - Critical performance and permission fixes for PR #4 (Multiplayer Cursors)
+- **v1.2** - October 14, 2025 - Ghost user fix: Manual cleanup on logout for PR #4
 
 ---
 

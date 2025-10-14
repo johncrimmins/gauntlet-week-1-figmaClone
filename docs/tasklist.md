@@ -391,57 +391,57 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Task 1: Create throttle utility**
-  - [ ] Files: `src/utils/throttle.ts`
-  - [ ] Generic throttle function for rate limiting
-  - [ ] Will limit cursor updates to 100ms intervals
+- [x] **Task 1: Create throttle utility**
+  - [x] Files: `src/utils/throttle.ts`
+  - [x] Generic throttle function for rate limiting
+  - [x] Will limit cursor updates to 100ms intervals
 
-- [ ] **Task 2: Create cursor type definitions**
-  - [ ] Files: `src/types/canvas.types.ts`
-  - [ ] Define `CursorPosition`: `{ userId: string; x: number; y: number; displayName: string; color: string; }`
+- [x] **Task 2: Create cursor type definitions**
+  - [x] Files: `src/types/canvas.types.ts`
+  - [x] Define `CursorPosition`: `{ userId: string; x: number; y: number; displayName: string; color: string; }`
 
-- [ ] **Task 3: Build cursor service**
-  - [ ] Files: `src/services/cursor.service.ts`
-  - [ ] Use Firebase Realtime Database
-  - [ ] Path: `/cursors/{userId}`
-  - [ ] Function: `updateCursorPosition(userId, x, y, displayName, color)`
-  - [ ] Function: `subscribeToCursors(callback)` - Listen to all cursor updates
-  - [ ] Function: `removeCursor(userId)` - Delete on disconnect
-  - [ ] Use `onDisconnect().remove()` for cleanup
+- [x] **Task 3: Build cursor service**
+  - [x] Files: `src/services/cursor.service.ts`
+  - [x] Use Firebase Realtime Database
+  - [x] Path: `/cursors/{userId}`
+  - [x] Function: `updateCursorPosition(userId, x, y, displayName, color)`
+  - [x] Function: `subscribeToCursors(callback)` - Listen to all cursor updates
+  - [x] Function: `removeCursor(userId)` - Delete on disconnect
+  - [x] Use `onDisconnect().remove()` for cleanup
 
-- [ ] **Task 4: Create useCursors hook**
-  - [ ] Files: `src/hooks/useCursors.ts`
-  - [ ] Import throttle utility
-  - [ ] State: `cursors` map (userId → CursorPosition)
-  - [ ] Subscribe to cursor updates
-  - [ ] Method: `updateMyCursor(x, y)` - Throttled to 100ms
-  - [ ] Clean up cursor on unmount
-  - [ ] Return cursors and update method
+- [x] **Task 4: Create useCursors hook**
+  - [x] Files: `src/hooks/useCursors.ts`
+  - [x] Import throttle utility
+  - [x] State: `cursors` map (userId → CursorPosition)
+  - [x] Subscribe to cursor updates
+  - [x] Method: `updateMyCursor(x, y)` - Throttled to 100ms
+  - [x] Clean up cursor on unmount
+  - [x] Return cursors and update method
 
-- [ ] **Task 5: Build Cursor component as Konva object**
-  - [ ] Files: `src/components/Cursors/Cursor.tsx`
-  - [ ] Render as Konva Group with:
-    - [ ] Konva Arrow or custom shape for cursor
-    - [ ] Konva Text for name label
-  - [ ] Props: `x`, `y`, `displayName`, `color`
-  - [ ] Position using Konva x/y props
-  - [ ] Note: Konva handles transforms automatically
+- [x] **Task 5: Build Cursor component as Konva object**
+  - [x] Files: `src/components/Cursors/Cursor.tsx`
+  - [x] Render as Konva Group with:
+    - [x] Konva Arrow or custom shape for cursor
+    - [x] Konva Text for name label
+  - [x] Props: `x`, `y`, `displayName`, `color`
+  - [x] Position using Konva x/y props
+  - [x] Note: Konva handles transforms automatically
 
-- [ ] **Task 6: Integrate cursors into Canvas**
-  - [ ] Files: `src/components/Canvas/Canvas.tsx`
-  - [ ] Set up basic Konva Stage and Layer
-  - [ ] Add onMouseMove listener to Stage
-  - [ ] Get pointer position from Konva stage
-  - [ ] Call `updateMyCursor` with stage coordinates
-  - [ ] Render Cursor components in Konva Layer
-  - [ ] Filter out current user's cursor
+- [x] **Task 6: Integrate cursors into Canvas**
+  - [x] Files: `src/components/Canvas/Canvas.tsx`
+  - [x] Set up basic Konva Stage and Layer
+  - [x] Add onMouseMove listener to Stage
+  - [x] Get pointer position from Konva stage
+  - [x] Call `updateMyCursor` with stage coordinates
+  - [x] Render Cursor components in Konva Layer
+  - [x] Filter out current user's cursor
 
-- [ ] **Task 7: Test cursor synchronization**
-  - [ ] Open in 2 browsers
-  - [ ] Move mouse and verify cursor appears in other browser
-  - [ ] Verify name labels are correct
-  - [ ] Check 100ms throttling is working
-  - [ ] Test with 3+ users
+- [x] **Task 7: Test cursor synchronization**
+  - [x] Open in 2 browsers
+  - [x] Move mouse and verify cursor appears in other browser
+  - [x] Verify name labels are correct
+  - [x] Check 100ms throttling is working
+  - [x] Test with 3+ users
 
 - [ ] **Task 8: Deploy to Vercel**
   - [ ] Commit and push all changes
