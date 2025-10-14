@@ -1,19 +1,20 @@
 /**
  * Cursor Component
  * 
- * Renders a user's cursor as a Konva object in the collaborative canvas.
+ * Renders a user's cursor as an HTML overlay element in the collaborative canvas.
  * Displays a pointer shape with a label showing the user's display name.
+ * Unlike Konva objects, this cursor maintains constant size at all zoom levels.
  */
 
-import { Group, Arrow, Text, Circle } from 'react-konva';
+import './Cursor.css';
 
 /**
  * Props for the Cursor component
  */
 interface CursorProps {
-  /** X coordinate position on canvas */
+  /** X coordinate position on screen (screen coordinates, not canvas) */
   x: number;
-  /** Y coordinate position on canvas */
+  /** Y coordinate position on screen (screen coordinates, not canvas) */
   y: number;
   /** User's display name to show on label */
   displayName: string;
@@ -22,70 +23,49 @@ interface CursorProps {
 }
 
 /**
- * Cursor component that renders a user's cursor position in the canvas
+ * Cursor component that renders a user's cursor position as HTML overlay
  * 
- * Rendered as a Konva Group containing a pointer shape and a name label.
- * The cursor automatically transforms with the canvas pan/zoom since it's
- * a Konva object in the same stage.
+ * Rendered as an absolutely positioned HTML div that overlays the canvas.
+ * This approach ensures the cursor remains constant size regardless of
+ * canvas zoom level, providing consistent visual feedback.
  * 
- * @param props - Cursor properties including position, name, and color
+ * @param props - Cursor properties including screen position, name, and color
  * 
  * @example
- * <Layer>
+ * <div className="cursor-overlay">
  *   <Cursor 
  *     x={150} 
  *     y={200} 
  *     displayName="John Doe" 
  *     color="#FF6B6B" 
  *   />
- * </Layer>
+ * </div>
  */
 export function Cursor({ x, y, displayName, color }: CursorProps) {
   return (
-    <Group x={x} y={y}>
-      {/* Cursor pointer - simple arrow pointing up-left */}
-      <Arrow
-        points={[0, 0, 0, 20, 5, 16]}
-        pointerLength={0}
-        pointerWidth={0}
-        fill={color}
-        stroke={color}
-        strokeWidth={2}
-        tension={0}
-      />
-      
-      {/* Small circle at cursor tip for better visibility */}
-      <Circle
-        x={0}
-        y={0}
-        radius={2}
-        fill={color}
-      />
-      
-      {/* Name label background */}
-      <Group x={8} y={8}>
-        <Text
-          text={displayName}
-          fontSize={12}
-          fontFamily="Arial"
-          fill="white"
-          padding={4}
-          align="left"
+    <div
+      className="cursor"
+      style={{
+        left: `${x}px`,
+        top: `${y}px`,
+      }}
+    >
+      <div className="cursor-pointer">
+        {/* CSS-based cursor arrow */}
+        <div
+          className="cursor-arrow"
+          style={{ color }}
         />
         
-        {/* Background rectangle for label (drawn behind text) */}
-        <Text
-          text={displayName}
-          fontSize={12}
-          fontFamily="Arial"
-          fill={color}
-          padding={4}
-          align="left"
-          opacity={0.9}
-          cornerRadius={4}
-        />
-      </Group>
-    </Group>
+        {/* Name label with colored background */}
+        <div
+          className="cursor-label"
+          style={{ backgroundColor: color }}
+        >
+          {displayName}
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -9,19 +9,28 @@
 import { useAuth } from '../../hooks/useAuth';
 import { usePresence } from '../../hooks/usePresence';
 import { useCursors } from '../../hooks/useCursors';
+import { useCanvas } from '../../hooks/useCanvas';
 import { OnlineUsers } from '../Presence/OnlineUsers';
 import { Cursor } from '../Cursors/Cursor';
-import { Stage, Layer } from 'react-konva';
+import { CanvasGrid } from './CanvasGrid';
+import { Stage, Layer, Rect } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import * as presenceService from '../../services/presence.service';
 import * as cursorService from '../../services/cursor.service';
+import { canvasToScreen } from '../../utils/canvas.utils';
 import './Canvas.css';
+
+// Canvas configuration constants
+const CANVAS_WIDTH = 5000;
+const CANVAS_HEIGHT = 5000;
+const MIN_SCALE = 0.1;
+const MAX_SCALE = 3;
 
 /**
  * Main canvas component for collaborative editing
  * 
  * Displays the canvas workspace with integrated presence awareness and
- * real-time multiplayer cursors using Konva.
+ * real-time multiplayer cursors using HTML overlay.
  * 
  * @example
  * <Canvas />
@@ -38,6 +47,7 @@ export function Canvas() {
     currentUser?.displayName || null,
     currentUser?.color || null
   );
+  const { viewport, setViewport } = useCanvas();
 
   /**
    * Handles user logout with proper cleanup
@@ -65,6 +75,9 @@ export function Canvas() {
   /**
    * Handles mouse movement on the canvas stage
    * Updates the current user's cursor position (throttled to 100ms)
+   * 
+   * Note: getPointerPosition() returns canvas coordinates (accounting for zoom/pan)
+   * which is exactly what we need to store in Firebase.
    */
   function handleMouseMove(e: KonvaEventObject<MouseEvent>) {
     const stage = e.target.getStage();
@@ -74,6 +87,57 @@ export function Canvas() {
     if (!pointerPosition) return;
 
     updateMyCursor(pointerPosition.x, pointerPosition.y);
+  }
+
+  /**
+   * Handles stage drag end to update viewport position
+   */
+  function handleDragEnd(e: KonvaEventObject<DragEvent>) {
+    const stage = e.target;
+    setViewport({
+      ...viewport,
+      x: stage.x(),
+      y: stage.y(),
+    });
+  }
+
+  /**
+   * Handles mouse wheel for zooming
+   * Zooms toward the mouse cursor position
+   */
+  function handleWheel(e: KonvaEventObject<WheelEvent>) {
+    e.evt.preventDefault();
+
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const oldScale = viewport.scale;
+    const pointerPosition = stage.getPointerPosition();
+    if (!pointerPosition) return;
+
+    // Calculate new scale based on wheel delta
+    const scaleBy = 1.1;
+    const newScale = e.evt.deltaY > 0 
+      ? Math.max(MIN_SCALE, oldScale / scaleBy)
+      : Math.min(MAX_SCALE, oldScale * scaleBy);
+
+    // Calculate new position to zoom toward mouse
+    // Formula: newPos = mousePos - (mousePos - oldPos) * (newScale / oldScale)
+    const mousePointTo = {
+      x: (pointerPosition.x - viewport.x) / oldScale,
+      y: (pointerPosition.y - viewport.y) / oldScale,
+    };
+
+    const newPos = {
+      x: pointerPosition.x - mousePointTo.x * newScale,
+      y: pointerPosition.y - mousePointTo.y * newScale,
+    };
+
+    setViewport({
+      x: newPos.x,
+      y: newPos.y,
+      scale: newScale,
+    });
   }
 
   return (
@@ -104,26 +168,55 @@ export function Canvas() {
         <Stage
           width={window.innerWidth}
           height={window.innerHeight - 80}
+          x={viewport.x}
+          y={viewport.y}
+          scaleX={viewport.scale}
+          scaleY={viewport.scale}
+          draggable={true}
+          onDragEnd={handleDragEnd}
+          onWheel={handleWheel}
           onMouseMove={handleMouseMove}
         >
           <Layer>
-            {/* Render all cursors except the current user's cursor */}
-            {Object.entries(cursors).map(([id, cursor]) => {
-              // Don't render own cursor
-              if (id === currentUser?.id) return null;
-              
-              return (
-                <Cursor
-                  key={id}
-                  x={cursor.x}
-                  y={cursor.y}
-                  displayName={cursor.displayName}
-                  color={cursor.color}
-                />
-              );
-            })}
+            {/* Canvas background - 5000x5000 workspace */}
+            <Rect
+              x={0}
+              y={0}
+              width={CANVAS_WIDTH}
+              height={CANVAS_HEIGHT}
+              fill="#f5f5f5"
+              listening={false}
+            />
+            
+            {/* Grid overlay - Figma-style adaptive grid */}
+            <CanvasGrid
+              width={CANVAS_WIDTH}
+              height={CANVAS_HEIGHT}
+              viewport={viewport}
+            />
           </Layer>
         </Stage>
+
+        {/* HTML cursor overlay - rendered outside Konva to maintain constant size */}
+        <div className="cursor-overlay">
+          {Object.entries(cursors).map(([id, cursor]) => {
+            // Don't render own cursor
+            if (id === currentUser?.id) return null;
+            
+            // Convert canvas coordinates to screen coordinates
+            const screenPos = canvasToScreen(cursor.x, cursor.y, viewport);
+            
+            return (
+              <Cursor
+                key={id}
+                x={screenPos.x}
+                y={screenPos.y}
+                displayName={cursor.displayName}
+                color={cursor.color}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );
