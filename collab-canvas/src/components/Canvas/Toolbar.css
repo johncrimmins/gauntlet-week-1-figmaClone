@@ -1,0 +1,61 @@
+/**
+ * Toolbar Styles
+ * 
+ * Styling for the canvas toolbar with mode selection buttons.
+ */
+
+.toolbar {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+}
+
+.toolbar-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover {
+  background: #e8e8e8;
+  border-color: #ccc;
+}
+
+.toolbar-btn.active {
+  background: #0066FF;
+  color: white;
+  border-color: #0066FF;
+}
+
+.toolbar-btn.active:hover {
+  background: #0052CC;
+  border-color: #0052CC;
+}
+
+.toolbar-mode-indicator {
+  font-size: 14px;
+  color: #666;
+  padding: 0 8px;
+  border-left: 2px solid #e0e0e0;
+}
+
+.toolbar-mode-indicator strong {
+  color: #0066FF;
+  font-weight: 600;
+}
+

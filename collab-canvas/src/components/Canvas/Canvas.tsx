@@ -6,18 +6,22 @@
  * users collaborate in real-time.
  */
 
+import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { usePresence } from '../../hooks/usePresence';
 import { useCursors } from '../../hooks/useCursors';
 import { useCanvas } from '../../hooks/useCanvas';
+import { useObjects } from '../../hooks/useObjects';
 import { OnlineUsers } from '../Presence/OnlineUsers';
 import { Cursor } from '../Cursors/Cursor';
 import { CanvasGrid } from './CanvasGrid';
+import { Toolbar } from './Toolbar';
+import { CanvasObject } from './CanvasObject';
 import { Stage, Layer, Rect } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import * as presenceService from '../../services/presence.service';
 import * as cursorService from '../../services/cursor.service';
-import { canvasToScreen } from '../../utils/canvas.utils';
+import { canvasToScreen, screenToCanvas } from '../../utils/canvas.utils';
 import './Canvas.css';
 
 // Canvas configuration constants
@@ -48,6 +52,11 @@ export function Canvas() {
     currentUser?.color || null
   );
   const { viewport, setViewport } = useCanvas();
+  const { objects, selectedObjectId, createRectangle, selectObject, deselectObject } = useObjects();
+  
+  // Creation mode state
+  const [isCreating, setIsCreating] = useState(false);
+  const [ghostPosition, setGhostPosition] = useState<{ x: number; y: number } | null>(null);
 
   /**
    * Handles user logout with proper cleanup
@@ -76,8 +85,8 @@ export function Canvas() {
    * Handles mouse movement on the canvas stage
    * Updates the current user's cursor position (throttled to 100ms)
    * 
-   * Note: getPointerPosition() returns canvas coordinates (accounting for zoom/pan)
-   * which is exactly what we need to store in Firebase.
+   * Note: getPointerPosition() returns screen coordinates, so we must convert
+   * to canvas coordinates before storing in Firebase.
    */
   function handleMouseMove(e: KonvaEventObject<MouseEvent>) {
     const stage = e.target.getStage();
@@ -86,7 +95,16 @@ export function Canvas() {
     const pointerPosition = stage.getPointerPosition();
     if (!pointerPosition) return;
 
-    updateMyCursor(pointerPosition.x, pointerPosition.y);
+    // Convert screen coordinates to canvas coordinates
+    const canvasPos = screenToCanvas(pointerPosition.x, pointerPosition.y, viewport);
+    
+    // Update cursor position in Firebase
+    updateMyCursor(canvasPos.x, canvasPos.y);
+    
+    // Update ghost rectangle position when in creation mode
+    if (isCreating) {
+      setGhostPosition(canvasPos);
+    }
   }
 
   /**
@@ -140,6 +158,44 @@ export function Canvas() {
     });
   }
 
+  /**
+   * Toggles between create and select modes
+   */
+  function handleToggleCreate() {
+    if (isCreating) {
+      // Exiting creation mode - clear ghost
+      setGhostPosition(null);
+    }
+    setIsCreating(!isCreating);
+  }
+
+  /**
+   * Handles clicks on the canvas background
+   * In create mode: creates a new rectangle at click position
+   * In select mode: deselects any selected object
+   */
+  function handleBackgroundClick(e: KonvaEventObject<MouseEvent>) {
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const pointerPosition = stage.getPointerPosition();
+    if (!pointerPosition) return;
+
+    // Convert screen coordinates to canvas coordinates
+    const canvasPos = screenToCanvas(pointerPosition.x, pointerPosition.y, viewport);
+
+    if (isCreating) {
+      // Create rectangle at click position
+      createRectangle(canvasPos.x, canvasPos.y);
+      // Exit creation mode and clear ghost
+      setIsCreating(false);
+      setGhostPosition(null);
+    } else {
+      // Deselect any selected object
+      deselectObject();
+    }
+  }
+
   return (
     <div className="canvas-container">
       {/* Header with logout button */}
@@ -163,6 +219,9 @@ export function Canvas() {
       {/* Online users list */}
       <OnlineUsers users={onlineUsers} />
 
+      {/* Toolbar */}
+      <Toolbar isCreating={isCreating} onToggleCreate={handleToggleCreate} />
+
       {/* Canvas workspace with Konva Stage */}
       <div className="canvas-workspace">
         <Stage
@@ -185,7 +244,8 @@ export function Canvas() {
               width={CANVAS_WIDTH}
               height={CANVAS_HEIGHT}
               fill="#f5f5f5"
-              listening={false}
+              onClick={handleBackgroundClick}
+              onTap={handleBackgroundClick}
             />
             
             {/* Grid overlay - Figma-style adaptive grid */}
@@ -194,6 +254,30 @@ export function Canvas() {
               height={CANVAS_HEIGHT}
               viewport={viewport}
             />
+
+            {/* Canvas objects (rectangles) */}
+            {Object.values(objects).map((obj) => (
+              <CanvasObject
+                key={obj.id}
+                object={obj}
+                isSelected={selectedObjectId === obj.id}
+                onSelect={() => selectObject(obj.id)}
+              />
+            ))}
+
+            {/* Ghost rectangle preview when creating */}
+            {isCreating && ghostPosition && (
+              <Rect
+                x={ghostPosition.x}
+                y={ghostPosition.y}
+                width={100}
+                height={100}
+                stroke="#0066FF"
+                strokeWidth={2}
+                dash={[5, 5]}
+                listening={false}
+              />
+            )}
           </Layer>
         </Stage>
 

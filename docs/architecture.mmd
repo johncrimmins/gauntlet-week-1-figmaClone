@@ -14,6 +14,7 @@ graph TB
             subgraph "Canvas Components"
                 Toolbar(Toolbar)
                 CanvasObject(CanvasObject)
+                CanvasGrid(CanvasGrid)
             end
 
             subgraph "Presence Components"
@@ -52,6 +53,8 @@ graph TB
                 Rect(Konva Rect)
                 Group(Konva Group)
             end
+
+            HTMLOverlay(HTML Cursor Overlay<br/>Absolute Positioned)
         end
 
         LocalStorage[(localStorage<br/>canvasViewport)]
@@ -101,7 +104,9 @@ graph TB
     cursors -->|realtime| cursorService
     cursorService -->|updates| useCursors
     useCursors -->|cursor data| Cursor
-    Cursor -->|render in| Layer
+    Canvas -->|convert coords| canvasUtils
+    canvasUtils -->|screen position| Cursor
+    Cursor -->|render as HTML overlay| HTMLOverlay
     onDisconnect -->|cleanup (remove node)| cursors
     throttle -->|rate limit| useCursors
 
@@ -126,10 +131,12 @@ graph TB
 
     %% Canvas Rendering
     Canvas -->|contains| Stage
+    Canvas -->|contains| HTMLOverlay
     Stage -->|contains| Layer
-    Layer -->|renders| Rect
-    Layer -->|renders| Group
-    Group -->|contains| Cursor
+    Layer -->|renders background| Rect
+    Layer -->|renders grid| CanvasGrid
+    CanvasGrid -->|adaptive lines| canvasUtils
+    HTMLOverlay -->|renders| Cursor
 
     %% Viewport Persistence
     Canvas -->|pan/zoom| useCanvas

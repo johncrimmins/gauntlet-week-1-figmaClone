@@ -60,7 +60,8 @@ Hosting: Vercel (frontend) + Firebase (backend)
 
 **Key Technical Decisions:**
 - **Firebase Realtime Database** (not Firestore) for all real-time data - better for high-frequency updates
-- **Konva objects** for cursor rendering (not HTML overlay) - simpler transform handling
+- **HTML overlay** for cursor rendering (not Konva objects) - prevents cursor scaling with zoom
+- **Adaptive grid system** (Figma-style) - provides visual feedback for zoom level and boundaries
 - **Transaction-based locking** for object control - prevents race conditions
 - **localStorage** for viewport persistence - survives refreshes
 
@@ -105,7 +106,7 @@ Hosting: Vercel (frontend) + Firebase (backend)
 **Definition of Done:**
 - Cursor positions update in real-time
 - Each user sees all other users' cursors
-- Cursors transform correctly with pan/zoom
+- Cursors remain consistent size at all zoom levels (HTML overlay prevents scaling)
 - Note: User colors may change between sessions (acceptable for MVP)
 
 #### 2c. Object Synchronization
@@ -129,11 +130,13 @@ Hosting: Vercel (frontend) + Firebase (backend)
 - **Zoom** with mouse wheel toward cursor position
 - **Workspace:** 5,000 x 5,000px canvas
 - **Viewport persistence** in localStorage
+- **Adaptive grid overlay** (Figma-style, scales with zoom)
 
 **Definition of Done:**
 - Pan/zoom works smoothly
 - Viewport position/scale persists across refreshes
 - Canvas can hold a dozen objects comfortably
+- Grid provides visual feedback for zoom level and canvas boundaries
 
 #### 3b. Rectangle System (MVP Scope: One Shape Only)
 - **Shape type: Rectangle only**
@@ -215,10 +218,11 @@ lockRef.transaction((currentLock) => {
 });
 ```
 
-2. **Cursor Rendering in Konva:**
-- Render cursors as Konva shapes in the same stage
-- Automatic transform handling with pan/zoom
-- No separate HTML layer needed
+2. **Cursor Rendering with HTML Overlay:**
+- Render cursors as absolutely-positioned HTML divs
+- Convert canvas coordinates to screen coordinates using viewport transform
+- Cursors stay constant size regardless of zoom level
+- Formula: `screenX = canvasX * scale + stageX`, `screenY = canvasY * scale + stageY`
 
 3. **Simple Rectangle Creation State:**
 ```javascript

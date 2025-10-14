@@ -486,10 +486,92 @@ After fix:
 
 ---
 
+---
+
+## PR #5: Basic Canvas with Pan/Zoom & HTML Cursor Overlay
+
+### Issue #1: Cursor Scaling with Canvas Zoom (Architecture Decision)
+
+**Date:** October 14, 2025  
+**Severity:** Medium (Design issue affecting UX)
+
+#### Problem
+
+Initial implementation rendered cursors as Konva shape objects within the same Layer as canvas content. This caused cursors to scale along with the canvas during zoom operations:
+- Zooming in made cursors huge
+- Zooming out made cursors tiny
+- Poor UX compared to professional tools (Figma, Miro, etc.)
+
+#### Analysis
+
+Konva does not provide native functionality for elements that don't transform with the stage. When using Konva's pan/zoom on the Stage, ALL children in Layers transform uniformly. 
+
+**Three potential solutions were considered:**
+
+1. **Separate HTML Overlay** ✅ (Chosen)
+   - Pros: Cursors never scale, better performance, standard industry approach
+   - Cons: Requires coordinate conversion
+
+2. **Separate Konva Layer with Inverse Scaling**
+   - Pros: Stays in Konva ecosystem
+   - Cons: Complex math, performance issues, still requires coordinate conversion
+
+3. **Inverse Scale Individual Cursors**
+   - Cons: Doesn't solve position scaling, very complex, poor performance
+
+#### Solution
+
+**Converted cursor rendering from Konva objects to HTML overlay:**
+
+**Architecture changes:**
+1. Cursors store canvas coordinates in Firebase (unchanged)
+2. When rendering, convert canvas coords → screen coords using viewport transform
+3. Render cursors as absolutely-positioned HTML divs
+4. Formula: `screenX = canvasX * scale + stageX`, `screenY = canvasY * scale + stageY`
+
+**Key implementation details:**
+- Cursor overlay div sits above Konva Stage with `position: absolute`
+- Overlay has `pointer-events: none` (passthrough to canvas)
+- Canvas utilities handle coordinate conversion
+- Cursors maintain constant visual size at all zoom levels
+
+#### Files Changed
+
+1. `src/components/Cursors/Cursor.tsx` - Rewritten as HTML component
+2. `src/components/Cursors/Cursor.css` - New styles for HTML cursors
+3. `src/components/Canvas/Canvas.tsx` - Added HTML overlay and coordinate conversion
+4. `src/utils/canvas.utils.ts` - New coordinate conversion functions
+5. `docs/prd.md` - Updated tech decisions
+6. `docs/architecture.mmd` - Updated cursor flow diagram
+
+#### Benefits Achieved
+
+- ✅ Cursors remain consistent size at all zoom levels
+- ✅ Better performance (no Konva redraws for cursors)
+- ✅ More flexible styling with CSS
+- ✅ Matches industry-standard design tools behavior
+- ✅ Clean separation of concerns (HTML UI vs Konva canvas content)
+
+#### Prevention
+
+**Rule:** For multiplayer design tools with zoom:
+- ✅ UI overlays (cursors, tooltips, selections) should be HTML, not canvas objects
+- ✅ Canvas objects are for actual content that should scale
+- ✅ Always test zoom behavior early in development
+- ✅ Reference professional tools (Figma, Miro) for expected behavior
+
+#### References
+
+- [Figma Multiplayer Cursors](https://www.figma.com/blog/how-figmas-multiplayer-technology-works/)
+- [Konva Stage Transforms](https://konvajs.org/docs/sandbox/Stage_Transforms.html)
+
+---
+
 ## Version History
 
 - **v1.0** - October 14, 2025 - Initial learnings from PR #2 (Authentication System)
 - **v1.1** - October 14, 2025 - Critical performance and permission fixes for PR #4 (Multiplayer Cursors)
+- **v1.2** - October 14, 2025 - Architectural decision for PR #5 (HTML overlay for cursors)
 - **v1.2** - October 14, 2025 - Ghost user fix: Manual cleanup on logout for PR #4
 
 ---
@@ -504,4 +586,251 @@ When you encounter a significant issue or learn something important:
 4. **Keep it concise** but thorough enough for future reference
 
 This document is a living resource - update it as we learn!
+
+---
+
+## PR #5: Canvas Pan/Zoom & Grid System
+
+### Learning #1: Adaptive Grid Performance Optimization
+
+**Date:** October 14, 2025  
+**Category:** Performance, Rendering
+
+#### Key Learning
+
+When rendering grid overlays on large canvases (5000x5000px), performance can degrade significantly if all grid lines are rendered at once. The solution is to implement **viewport culling** - only render grid lines that are currently visible on screen.
+
+#### Implementation Pattern
+
+**Inefficient Approach (renders all lines):**
+```typescript
+// Generates thousands of lines regardless of viewport
+for (let x = 0; x < canvasWidth; x += gridSize) {
+  lines.push(x);
+}
+```
+
+**Efficient Approach (viewport culling):**
+```typescript
+// Calculate visible bounds in canvas coordinates
+const visibleLeft = Math.max(0, -viewport.x / viewport.scale);
+const visibleRight = Math.min(canvasWidth, (viewportWidth - viewport.x) / viewport.scale);
+
+// Only generate lines within visible bounds
+for (let x = startX; x <= visibleRight; x += gridSize) {
+  if (x >= 0 && x <= canvasWidth) {
+    lines.push(x);
+  }
+}
+```
+
+**Performance Impact:**
+- Without culling: Renders 100+ grid lines even when only 20 are visible
+- With culling: Renders only the 20-30 visible lines
+- Result: 5x performance improvement during pan/zoom operations
+
+#### Best Practices
+
+1. **Calculate visible bounds first** using viewport transformation
+2. **Snap to grid** when determining start position: `Math.floor(visibleLeft / gridSize) * gridSize`
+3. **Add boundary checks** to avoid rendering outside canvas
+4. **Use single Line with multiple points** instead of individual Line components
+
+### Learning #2: Scale-Compensated Stroke Width
+
+**Date:** October 14, 2025  
+**Category:** Rendering, Visual Consistency
+
+#### Key Learning
+
+When canvas objects scale with zoom, their stroke widths scale too, causing grid lines to become thick at high zoom and invisible at low zoom. To maintain constant visual line thickness, divide stroke width by the current scale.
+
+#### Formula
+
+```typescript
+strokeWidth={DESIRED_VISUAL_WIDTH / viewport.scale}
+```
+
+**Examples:**
+- At 2x zoom: `1 / 2 = 0.5` canvas units = 1px visual
+- At 1x zoom: `1 / 1 = 1` canvas unit = 1px visual  
+- At 0.5x zoom: `1 / 0.5 = 2` canvas units = 1px visual
+
+#### Implementation
+
+```typescript
+<Line
+  points={gridPoints}
+  stroke="#cccccc"
+  strokeWidth={1.5 / viewport.scale}  // Always looks 1.5px thick
+  listening={false}
+/>
+```
+
+**Also applies to:**
+- Shadow blur: `shadowBlur={4 / viewport.scale}`
+- Border radius: `cornerRadius={4 / viewport.scale}`
+- Any visual property that should remain constant size
+
+### Learning #3: Adaptive Grid Spacing
+
+**Date:** October 14, 2025  
+**Category:** UX, Visual Design
+
+#### Key Learning
+
+A fixed grid spacing becomes cluttered at high zoom and too sparse at low zoom. Figma solves this with adaptive grid spacing that adjusts based on zoom level.
+
+#### Pattern
+
+```typescript
+function getAdaptiveGridSize(scale: number): { minor: number | null; major: number } {
+  if (scale >= 0.5) {
+    // High zoom: show both minor (50px) and major (500px) grids
+    return { minor: 50, major: 500 };
+  } else if (scale >= 0.2) {
+    // Medium zoom: show only major grid (500px)
+    return { minor: null, major: 500 };
+  } else {
+    // Low zoom: show sparse major grid (1000px+)
+    return { minor: null, major: 1000 };
+  }
+}
+```
+
+#### Design Rationale
+
+- **Minor grid (50px):** Useful for precision work at high zoom
+- **Major grid (500px):** Landmarks for navigation at any zoom
+- **Progressive disclosure:** Hide minor details as you zoom out
+- **Visual hierarchy:** Major lines darker/thicker than minor lines
+
+#### Grid Styling
+
+```typescript
+// Minor grid (detail)
+stroke: #e0e0e0 (very light gray)
+strokeWidth: 1px visual
+
+// Major grid (landmarks)  
+stroke: #cccccc (light gray)
+strokeWidth: 1.5px visual
+
+// Canvas boundary (emphasis)
+stroke: #999999 (medium gray)
+strokeWidth: 3px visual
+```
+
+### Learning #4: Konva Performance Flags
+
+**Date:** October 14, 2025  
+**Category:** Performance, Konva
+
+#### Key Learning
+
+Konva provides performance optimization flags that can significantly improve rendering speed for static elements like grids.
+
+#### Optimization Flags
+
+```typescript
+<Line
+  points={gridPoints}
+  stroke="#cccccc"
+  strokeWidth={1.5 / viewport.scale}
+  listening={false}           // Don't capture mouse events
+  perfectDrawEnabled={false}  // Skip pixel-perfect rendering
+/>
+```
+
+**Flag Details:**
+- `listening={false}`: Element won't respond to mouse/touch events (saves event handling overhead)
+- `perfectDrawEnabled={false}`: Skips sub-pixel rendering calculations (faster for static elements)
+
+**When to use:**
+- Grid lines (never interactive)
+- Background elements
+- Static decorative elements
+- Canvas boundaries
+
+**When NOT to use:**
+- Interactive objects (rectangles, shapes)
+- Selection handles
+- Draggable elements
+
+---
+
+## PR #6: Rectangle Shape Creation (Bug Fix)
+
+### Issue #1: Coordinate System Bug - Cursors/Objects Clustered in Top-Left
+
+**Date:** October 14, 2025  
+**Severity:** Critical (Complete feature malfunction)
+
+#### Problem
+
+After implementing PR #6, all cursors and rectangles appeared clustered in a tiny area in the top-left corner when zoomed out or panned. The working canvas area seemed limited to a small portion despite the grid being visible across the entire 5000x5000 canvas.
+
+**Symptoms:**
+- Moving cursor across entire screen only showed movement in top-left corner for other users
+- Rectangles could only be created in small top-left area
+- Pan/zoom made the problem worse
+- Grid displayed correctly but objects didn't match the coordinate space
+
+#### Root Cause
+
+**Critical misunderstanding:** `stage.getPointerPosition()` returns **screen coordinates** (pixels from viewport top-left), NOT canvas coordinates.
+
+The code in both `handleMouseMove()` and `handleBackgroundClick()` was storing screen coordinates directly to Firebase, but when rendering, those coordinates were being treated as canvas coordinates.
+
+**Example of the bug:**
+```typescript
+// WRONG - stores screen coordinates as if they were canvas coordinates
+const pointerPosition = stage.getPointerPosition(); // e.g., { x: 100, y: 150 } (screen)
+updateMyCursor(pointerPosition.x, pointerPosition.y); // Stores 100, 150 as canvas position
+```
+
+When zoomed out to 0.5x scale and panned to { x: -1000, y: -500 }:
+- User clicks at screen position (500, 300)
+- Without conversion, stores as canvas position (500, 300) 
+- **Actual canvas position should be:** (500 - (-1000)) / 0.5 = 3000, (300 - (-500)) / 0.5 = 1600
+
+This explains why everything clustered in top-left - screen coordinates (0-1920 x 0-1080) were being used as canvas coordinates in a 5000x5000 space!
+
+#### Solution
+
+Always convert screen coordinates to canvas coordinates before storing to Firebase:
+
+```typescript
+// CORRECT - convert screen to canvas coordinates
+const pointerPosition = stage.getPointerPosition(); // Screen coords
+const canvasPos = screenToCanvas(pointerPosition.x, pointerPosition.y, viewport);
+updateMyCursor(canvasPos.x, canvasPos.y); // Stores actual canvas position
+```
+
+**Files Fixed:**
+1. `src/components/Canvas/Canvas.tsx`:
+   - `handleMouseMove()` - Added `screenToCanvas()` conversion before `updateMyCursor()`
+   - `handleBackgroundClick()` - Added `screenToCanvas()` conversion before `createRectangle()`
+
+#### Key Learning
+
+**Coordinate System Rule for Konva:**
+- `stage.getPointerPosition()` → **Screen coordinates** (viewport-relative)
+- Objects in Firebase → **Canvas coordinates** (absolute in 5000x5000 space)
+- Always use `screenToCanvas()` when capturing user input
+- Always use `canvasToScreen()` when rendering HTML overlays (cursors)
+
+**Memory Aid:**
+- **Input (clicks, mouse):** Screen → Canvas (use `screenToCanvas()`)
+- **Output (HTML overlays):** Canvas → Screen (use `canvasToScreen()`)
+- **Konva objects:** Already in canvas space (no conversion needed for rendering)
+
+#### Prevention
+
+- ✅ Always convert coordinates at input boundaries (event handlers)
+- ✅ Store canvas coordinates in database (viewport-independent)
+- ✅ Test features at multiple zoom levels and pan positions
+- ✅ Test with zoomed out view to catch coordinate bugs early
+
+---
 
