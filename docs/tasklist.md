@@ -99,82 +99,82 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Initialize Vite + React + TypeScript project**
-  - Files: Create entire project structure
-  - Run: `npm create vite@latest collab-canvas -- --template react-ts`
-  - Configure Vite for React development
+- [x] **Initialize Vite + React + TypeScript project**
+  - [x] Files: Create entire project structure
+  - [x] Run: `npm create vite@latest collab-canvas -- --template react-ts`
+  - [x] Configure Vite for React development
 
-- [ ] **Install core dependencies**
-  - Files: `package.json`
-  - Install: `npm install react-konva konva`
-  - Install: `npm install firebase`
-  - Install: `npm install react-router-dom`
-  - Install dev dependencies: `npm install -D @types/react @types/react-dom`
+- [x] **Install core dependencies**
+  - [x] Files: `package.json`
+  - [x] Install: `npm install react-konva konva`
+  - [x] Install: `npm install firebase`
+  - [x] Install: `npm install react-router-dom`
+  - [x] Install dev dependencies: `npm install -D @types/react @types/react-dom`
 
-- [ ] **Set up Firebase project**
-  - Go to Firebase Console → Create new project
-  - Enable Firebase Realtime Database (not Firestore)
-  - Set Database rules to test mode (public read/write for MVP)
-  - Enable Firebase Authentication (Email/Password provider)
-  - Get Firebase config credentials
+- [x] **Set up Firebase project**
+  - [x] Go to Firebase Console → Create new project
+  - [x] Enable Firebase Realtime Database (not Firestore)
+  - [x] Set Database rules to test mode (public read/write for MVP)
+  - [x] Enable Firebase Authentication (Email/Password provider)
+  - [x] Get Firebase config credentials
 
-- [ ] **Create Firebase configuration**
-  - Files: `src/services/firebase.ts`, `.env.local`
-  - Initialize Firebase app with config object
-  - Initialize Realtime Database and Auth instances
-  - Export `database` and `auth` instances
-  - Use `VITE_` prefix for environment variables
+- [x] **Create Firebase configuration**
+  - [x] Files: `src/services/firebase.ts`, `.env.local`
+  - [x] Initialize Firebase app with config object
+  - [x] Initialize Realtime Database and Auth instances
+  - [x] Export `database` and `auth` instances
+  - [x] Use `VITE_` prefix for environment variables
 
-- [ ] **Configure environment variables**
-  - Files: `.env.local`, `.gitignore`
-  - Add Firebase config with VITE_ prefix:
-    - `VITE_FIREBASE_API_KEY`
-    - `VITE_FIREBASE_AUTH_DOMAIN`
-    - `VITE_FIREBASE_DATABASE_URL`
-    - `VITE_FIREBASE_PROJECT_ID`
-  - Ensure `.env.local` is in `.gitignore`
+- [x] **Configure environment variables**
+  - [x] Files: `.env.local`, `.gitignore`
+  - [x] Add Firebase config with VITE_ prefix:
+    - [x] `VITE_FIREBASE_API_KEY`
+    - [x] `VITE_FIREBASE_AUTH_DOMAIN`
+    - [x] `VITE_FIREBASE_DATABASE_URL`
+    - [x] `VITE_FIREBASE_PROJECT_ID`
+  - [x] Ensure `.env.local` is in `.gitignore`
 
-- [ ] **Set up project structure**
-  - Files: Create all folders from structure above
-  - Create placeholder `index.ts` files in each folder
+- [x] **Set up project structure**
+  - [x] Files: Create any folders missing from structure above
+  - [x] Create placeholder `index.ts` files in each folder
 
-- [ ] **Configure TypeScript**
-  - Files: `tsconfig.json`
-  - Ensure strict mode enabled
-  - Configure JSX for React
+- [x] **Configure TypeScript**
+  - [x] Files: `tsconfig.json`
+  - [x] Ensure strict mode enabled
+  - [x] Configure JSX for React
 
-- [ ] **Create basic App shell with visible content**
-  - Files: `src/App.tsx`, `src/index.tsx`, `src/App.css`
-  - Display "CollabCanvas MVP" header
-  - Add basic routing structure (placeholder routes)
-  - Verify app displays in browser with `npm run dev`
+- [x] **Create basic App shell with visible content**
+  - [x] Files: `src/App.tsx`, `src/index.tsx`, `src/App.css`
+  - [x] Display "CollabCanvas MVP" header
+  - [x] Add basic routing structure (placeholder routes)
+  - [x] Verify app displays in browser with `npm run dev`
 
-- [ ] **Initialize Git repository**
-  - Run: `git init`
-  - Files: `.gitignore`
-  - Include: `node_modules/`, `.env.local`, `dist/`
-  - Create initial commit
-  - Create GitHub repository and push
+- [x] **Initialize Git repository**
+  - [x] Run: `git init`
+  - [x] Files: `.gitignore`
+  - [x] Include: `node_modules/`, `.env.local`, `dist/`
+  - [x] Create initial commit
+  - [x] Create GitHub repository and push
 
 - [ ] **Set up Vercel deployment**
-  - Connect Vercel to GitHub repository
-  - Framework Preset: Vite
-  - Build Command: `npm run build`
-  - Output Directory: `dist`
+  - [ ] Connect Vercel to GitHub repository
+  - [ ] Framework Preset: Vite
+  - [ ] Build Command: `npm run build`
+  - [ ] Output Directory: `dist`
 
 - [ ] **Configure Vercel environment variables**
-  - Add all VITE_FIREBASE_* variables to Vercel dashboard
-  - Deploy to production environment
+  - [ ] Add all VITE_FIREBASE_* variables to Vercel dashboard
+  - [ ] Deploy to production environment
 
 - [ ] **Deploy to Vercel**
-  - Push to main branch → Vercel auto-deploys
-  - Verify "Hello World" loads at production URL
-  - No console errors
+  - [ ] Push to main branch → Vercel auto-deploys
+  - [ ] Verify "Hello World" loads at production URL
+  - [ ] No console errors
 
 - [ ] **Configure Firebase for production**
-  - In Firebase Console: Authentication → Settings
-  - Add Vercel domain to Authorized domains
-  - Test Firebase connection from deployed app
+  - [ ] In Firebase Console: Authentication → Settings
+  - [ ] Add Vercel domain to Authorized domains
+  - [ ] Test Firebase connection from deployed app
 
 **Definition of Done:**
 - ✅ Local dev server runs (`npm run dev`)
@@ -192,67 +192,67 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Create user type definitions**
-  - Files: `src/types/user.types.ts`
-  - Define `User` interface: `{ id: string; email: string; displayName: string; color: string; }`
-  - Define `AuthState` type
+  - [ ] Files: `src/types/user.types.ts`
+  - [ ] Define `User` interface: `{ id: string; email: string; displayName: string; color: string; }`
+  - [ ] Define `AuthState` type
 
 - [ ] **Build authentication service**
-  - Files: `src/services/auth.service.ts`
-  - Import Firebase Auth from `src/services/firebase.ts`
-  - Function: `signUp(email, password, displayName)` - Create user account
-  - Function: `logIn(email, password)` - Sign in user
-  - Function: `logOut()` - Sign out current user
-  - Function: `onAuthStateChanged(callback)` - Subscribe to auth changes
+  - [ ] Files: `src/services/auth.service.ts`
+  - [ ] Import Firebase Auth from `src/services/firebase.ts`
+  - [ ] Function: `signUp(email, password, displayName)` - Create user account
+  - [ ] Function: `logIn(email, password)` - Sign in user
+  - [ ] Function: `logOut()` - Sign out current user
+  - [ ] Function: `onAuthStateChanged(callback)` - Subscribe to auth changes
 
 - [ ] **Create useAuth hook**
-  - Files: `src/hooks/useAuth.ts`
-  - State: `currentUser`, `loading`
-  - Subscribe to Firebase auth state changes on mount
-  - Methods: wrap service functions for component use
-  - Return user state and methods
+  - [ ] Files: `src/hooks/useAuth.ts`
+  - [ ] State: `currentUser`, `loading`
+  - [ ] Subscribe to Firebase auth state changes on mount
+  - [ ] Methods: wrap service functions for component use
+  - [ ] Return user state and methods
 
 - [ ] **Build Login component**
-  - Files: `src/components/Auth/Login.tsx`
-  - Form with email and password inputs
-  - Submit button calls login function
-  - Link to signup page
-  - Display errors inline (no toasts needed)
-  - Navigate to `/canvas` on success
+  - [ ] Files: `src/components/Auth/Login.tsx`
+  - [ ] Form with email and password inputs
+  - [ ] Submit button calls login function
+  - [ ] Link to signup page
+  - [ ] Display errors inline (no toasts needed)
+  - [ ] Navigate to `/canvas` on success
 
 - [ ] **Build Signup component**
-  - Files: `src/components/Auth/Signup.tsx`
-  - Form with email, password, display name inputs
-  - Submit button calls signup function
-  - Link to login page
-  - Display errors inline
-  - Navigate to `/canvas` on success
+  - [ ] Files: `src/components/Auth/Signup.tsx`
+  - [ ] Form with email, password, display name inputs
+  - [ ] Submit button calls signup function
+  - [ ] Link to login page
+  - [ ] Display errors inline
+  - [ ] Navigate to `/canvas` on success
 
 - [ ] **Create AuthGuard component**
-  - Files: `src/components/Auth/AuthGuard.tsx`
-  - Check if user is authenticated
-  - Show loading state while checking
-  - Redirect to `/login` if not authenticated
-  - Render children if authenticated
+  - [ ] Files: `src/components/Auth/AuthGuard.tsx`
+  - [ ] Check if user is authenticated
+  - [ ] Show loading state while checking
+  - [ ] Redirect to `/login` if not authenticated
+  - [ ] Render children if authenticated
 
 - [ ] **Set up routing**
-  - Files: `src/App.tsx`
-- Install: `npm install react-router-dom`
-  - Route `/login` → Login component
-  - Route `/signup` → Signup component
-  - Route `/canvas` → Canvas (wrapped in AuthGuard)
-  - Default route → redirect to `/canvas`
+  - [ ] Files: `src/App.tsx`
+  - [ ] Install: `npm install react-router-dom`
+  - [ ] Route `/login` → Login component
+  - [ ] Route `/signup` → Signup component
+  - [ ] Route `/canvas` → Canvas (wrapped in AuthGuard)
+  - [ ] Default route → redirect to `/canvas`
 
 - [ ] **Add logout functionality**
-  - Files: `src/App.tsx`
-  - Add logout button in header when user is authenticated
-  - Call logout function on click
-  - Redirect to `/login` after logout
+  - [ ] Files: `src/App.tsx`
+  - [ ] Add logout button in header when user is authenticated
+  - [ ] Call logout function on click
+  - [ ] Redirect to `/login` after logout
 
 - [ ] **Test authentication flow locally**
-  - Create test account
-  - Log in and verify redirect to canvas
-  - Refresh page and verify session persists
-  - Log out and verify redirect to login
+  - [ ] Create test account
+  - [ ] Log in and verify redirect to canvas
+  - [ ] Refresh page and verify session persists
+  - [ ] Log out and verify redirect to login
 
 **Definition of Done:**
 - ✅ Users can sign up with email/password
@@ -270,57 +270,57 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Extend user type definitions**
-  - Files: `src/types/user.types.ts`
-  - Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; }`
+  - [ ] Files: `src/types/user.types.ts`
+  - [ ] Add `PresenceUser` interface: `{ userId: string; displayName: string; color: string; }`
 
 - [ ] **Build presence service**
-  - Files: `src/services/presence.service.ts`
-  - Use Firebase Realtime Database (not Firestore)
-  - Path: `/presence/{userId}`
-  - Function: `setUserOnline(userId, displayName, color)` - Set presence with onDisconnect
-  - Function: `setUserOffline(userId)` - Remove presence node
-  - Function: `subscribeToPresence(callback)` - Listen to all presence changes
-  - Use `onDisconnect().remove()` for automatic cleanup
+  - [ ] Files: `src/services/presence.service.ts`
+  - [ ] Use Firebase Realtime Database (not Firestore)
+  - [ ] Path: `/presence/{userId}`
+  - [ ] Function: `setUserOnline(userId, displayName, color)` - Set presence with onDisconnect
+  - [ ] Function: `setUserOffline(userId)` - Remove presence node
+  - [ ] Function: `subscribeToPresence(callback)` - Listen to all presence changes
+  - [ ] Use `onDisconnect().remove()` for automatic cleanup
 
 - [ ] **Create usePresence hook**
-  - Files: `src/hooks/usePresence.ts`
-  - State: `onlineUsers` array
-  - Set current user online on mount
-  - Subscribe to presence updates
-  - Clean up on unmount
-  - Return online users list
+  - [ ] Files: `src/hooks/usePresence.ts`
+  - [ ] State: `onlineUsers` array
+  - [ ] Set current user online on mount
+  - [ ] Subscribe to presence updates
+  - [ ] Clean up on unmount
+  - [ ] Return online users list
 
 - [ ] **Create color utility**
-  - Files: `src/utils/colors.ts`
-  - Function: `getRandomColor()` - Returns hex color
-  - Array of 12 distinct colors
-  - Function to assign color to user
+  - [ ] Files: `src/utils/colors.ts`
+  - [ ] Function: `getRandomColor()` - Returns hex color
+  - [ ] Array of 12 distinct colors
+  - [ ] Function to assign color to user
 
 - [ ] **Build OnlineUsers component**
-  - Files: `src/components/Presence/OnlineUsers.tsx`
-  - Display list of online users
-  - Show colored dot and display name
-  - Position in top-right corner
-  - Simple vertical list layout
+  - [ ] Files: `src/components/Presence/OnlineUsers.tsx`
+  - [ ] Display list of online users
+  - [ ] Show colored dot and display name
+  - [ ] Position in top-right corner
+  - [ ] Simple vertical list layout
 
 - [ ] **Build UserAvatar component**
-  - Files: `src/components/Presence/UserAvatar.tsx`
-  - Props: `displayName`, `color`
-  - Display first letter in colored circle
-  - Reusable for presence list and future cursors
+  - [ ] Files: `src/components/Presence/UserAvatar.tsx`
+  - [ ] Props: `displayName`, `color`
+  - [ ] Display first letter in colored circle
+  - [ ] Reusable for presence list and future cursors
 
 - [ ] **Integrate presence into Canvas page**
-  - Files: Create `src/components/Canvas/Canvas.tsx` (placeholder for now)
-  - Use `usePresence()` hook
-  - Render `OnlineUsers` component
-  - Pass current user info to presence service
+  - [ ] Files: Create `src/components/Canvas/Canvas.tsx` (placeholder for now)
+  - [ ] Use `usePresence()` hook
+  - [ ] Render `OnlineUsers` component
+  - [ ] Pass current user info to presence service
 
 - [ ] **Test presence system locally**
-  - Open app in 2 browser windows
-  - Log in with different accounts
-  - Verify both users appear in online list
-  - Close one browser → user disappears
-  - Firebase onDisconnect handles cleanup automatically
+  - [ ] Open app in 2 browser windows
+  - [ ] Log in with different accounts
+  - [ ] Verify both users appear in online list
+  - [ ] Close one browser → user disappears
+  - [ ] Firebase onDisconnect handles cleanup automatically
 
 **Definition of Done:**
 - ✅ Online users list shows all active users
@@ -338,64 +338,64 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Create throttle utility**
-  - Files: `src/utils/throttle.ts`
-  - Generic throttle function for rate limiting
-  - Will limit cursor updates to 100ms intervals
+  - [ ] Files: `src/utils/throttle.ts`
+  - [ ] Generic throttle function for rate limiting
+  - [ ] Will limit cursor updates to 100ms intervals
 
 - [ ] **Create cursor type definitions**
-  - Files: `src/types/canvas.types.ts`
-  - Define `CursorPosition`: `{ userId: string; x: number; y: number; displayName: string; color: string; }`
+  - [ ] Files: `src/types/canvas.types.ts`
+  - [ ] Define `CursorPosition`: `{ userId: string; x: number; y: number; displayName: string; color: string; }`
 
 - [ ] **Build cursor service**
-  - Files: `src/services/cursor.service.ts`
-  - Use Firebase Realtime Database
-  - Path: `/cursors/{userId}`
-  - Function: `updateCursorPosition(userId, x, y, displayName, color)`
-  - Function: `subscribeToCursors(callback)` - Listen to all cursor updates
-  - Function: `removeCursor(userId)` - Delete on disconnect
-  - Use `onDisconnect().remove()` for cleanup
+  - [ ] Files: `src/services/cursor.service.ts`
+  - [ ] Use Firebase Realtime Database
+  - [ ] Path: `/cursors/{userId}`
+  - [ ] Function: `updateCursorPosition(userId, x, y, displayName, color)`
+  - [ ] Function: `subscribeToCursors(callback)` - Listen to all cursor updates
+  - [ ] Function: `removeCursor(userId)` - Delete on disconnect
+  - [ ] Use `onDisconnect().remove()` for cleanup
 
 - [ ] **Create useCursors hook**
-  - Files: `src/hooks/useCursors.ts`
-  - Import throttle utility
-  - State: `cursors` map (userId → CursorPosition)
-  - Subscribe to cursor updates
-  - Method: `updateMyCursor(x, y)` - Throttled to 100ms
-  - Clean up cursor on unmount
-  - Return cursors and update method
+  - [ ] Files: `src/hooks/useCursors.ts`
+  - [ ] Import throttle utility
+  - [ ] State: `cursors` map (userId → CursorPosition)
+  - [ ] Subscribe to cursor updates
+  - [ ] Method: `updateMyCursor(x, y)` - Throttled to 100ms
+  - [ ] Clean up cursor on unmount
+  - [ ] Return cursors and update method
 
 - [ ] **Build Cursor component as Konva object**
-  - Files: `src/components/Cursors/Cursor.tsx`
-  - Render as Konva Group with:
-    - Konva Arrow or custom shape for cursor
-    - Konva Text for name label
-  - Props: `x`, `y`, `displayName`, `color`
-  - Position using Konva x/y props
-  - Note: Konva handles transforms automatically
+  - [ ] Files: `src/components/Cursors/Cursor.tsx`
+  - [ ] Render as Konva Group with:
+    - [ ] Konva Arrow or custom shape for cursor
+    - [ ] Konva Text for name label
+  - [ ] Props: `x`, `y`, `displayName`, `color`
+  - [ ] Position using Konva x/y props
+  - [ ] Note: Konva handles transforms automatically
 
 - [ ] **Integrate cursors into Canvas**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - Set up basic Konva Stage and Layer
-  - Add onMouseMove listener to Stage
-  - Get pointer position from Konva stage
-  - Call `updateMyCursor` with stage coordinates
-  - Render Cursor components in Konva Layer
-  - Filter out current user's cursor
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] Set up basic Konva Stage and Layer
+  - [ ] Add onMouseMove listener to Stage
+  - [ ] Get pointer position from Konva stage
+  - [ ] Call `updateMyCursor` with stage coordinates
+  - [ ] Render Cursor components in Konva Layer
+  - [ ] Filter out current user's cursor
 
 - [ ] **Test cursor synchronization**
-  - Open in 2 browsers
-  - Move mouse and verify cursor appears in other browser
-  - Verify name labels are correct
-  - Check 100ms throttling is working
-  - Test with 3+ users
+  - [ ] Open in 2 browsers
+  - [ ] Move mouse and verify cursor appears in other browser
+  - [ ] Verify name labels are correct
+  - [ ] Check 100ms throttling is working
+  - [ ] Test with 3+ users
 
 - [ ] **Deploy to Vercel**
-  - Commit and push all changes
-  - Verify deployment succeeds
-  - Test authentication on deployed URL
-  - Test presence system on deployed URL
-  - Test cursor sync on deployed URL
-  - Verify no CORS issues
+  - [ ] Commit and push all changes
+  - [ ] Verify deployment succeeds
+  - [ ] Test authentication on deployed URL
+  - [ ] Test presence system on deployed URL
+  - [ ] Test cursor sync on deployed URL
+  - [ ] Verify no CORS issues
 
 **Definition of Done:**
 - ✅ Cursors render as Konva objects
@@ -414,15 +414,15 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Define viewport types**
-  - Files: `src/types/canvas.types.ts`
-  - Add `ViewportState`: `{ x: number; y: number; scale: number; }`
-  - Add `CanvasConfig` with dimensions
+  - [ ] Files: `src/types/canvas.types.ts`
+  - [ ] Add `ViewportState`: `{ x: number; y: number; scale: number; }`
+  - [ ] Add `CanvasConfig` with dimensions
 
 - [ ] **Set up Konva Stage properly**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - Configure Stage with viewport dimensions
-  - Add Layer for canvas content
-  - Set initial scale and position
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] Configure Stage with viewport dimensions
+  - [ ] Add Layer for canvas content
+  - [ ] Set initial scale and position
 
 - [ ] **Implement pan functionality**
   - Files: `src/components/Canvas/Canvas.tsx`
@@ -431,49 +431,49 @@ Following the "Start with the Hard Part" principle with regular deployments:
   - Update viewport state on drag
 
 - [ ] **Implement zoom functionality**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - Add wheel event listener to Stage
-  - Calculate zoom toward mouse position
-  - Update scale (min: 0.1, max: 3)
-  - Update both scale and position for proper zoom
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] Add wheel event listener to Stage
+  - [ ] Calculate zoom toward mouse position
+  - [ ] Update scale (min: 0.1, max: 3)
+  - [ ] Update both scale and position for proper zoom
 
 - [ ] **Add viewport persistence**
-  - Files: `src/hooks/useCanvas.ts`
-  - Save viewport to localStorage on change
-  - Load viewport from localStorage on mount
-  - Key: `'canvasViewport'`
-  - Debounce saves to reduce writes
+  - [ ] Files: `src/hooks/useCanvas.ts`
+  - [ ] Save viewport to localStorage on change
+  - [ ] Load viewport from localStorage on mount
+  - [ ] Key: `'canvasViewport'`
+  - [ ] Debounce saves to reduce writes
 
 - [ ] **Create canvas utilities**
-  - Files: `src/utils/canvas.utils.ts`
-  - Function: `screenToCanvas(x, y, viewport)` - Convert coordinates
-  - Function: `canvasToScreen(x, y, viewport)` - Convert back
-  - These will be used for object placement
+  - [ ] Files: `src/utils/canvas.utils.ts`
+  - [ ] Function: `screenToCanvas(x, y, viewport)` - Convert coordinates
+  - [ ] Function: `canvasToScreen(x, y, viewport)` - Convert back
+  - [ ] These will be used for object placement
 
 - [ ] **Add canvas background**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - Add Konva Rect as background (5000x5000)
-  - Light gray color (#f5f5f5)
-  - Layer order: background → objects → cursors
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] Add Konva Rect as background (5000x5000)
+  - [ ] Light gray color (#f5f5f5)
+  - [ ] Layer order: background → objects → cursors
 
 - [ ] **Update cursor positions for pan/zoom**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - Cursors already use stage coordinates
-  - Verify cursors transform correctly with pan/zoom
-  - No additional work needed (Konva handles it)
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] Cursors already use stage coordinates
+  - [ ] Verify cursors transform correctly with pan/zoom
+  - [ ] No additional work needed (Konva handles it)
 
 - [ ] **Style canvas container**
-  - Files: `src/components/Canvas/Canvas.css`
-  - Set canvas to fill available space
-  - Cursor styles for pan (grab/grabbing)
-  - Overflow hidden
+  - [ ] Files: `src/components/Canvas/Canvas.css`
+  - [ ] Set canvas to fill available space
+  - [ ] Cursor styles for pan (grab/grabbing)
+  - [ ] Overflow hidden
 
 - [ ] **Test pan and zoom**
-  - Pan by dragging canvas
-  - Zoom with mouse wheel
-  - Verify zoom centers on cursor
-  - Refresh page → viewport restored
-  - Cursors remain accurate during pan/zoom
+  - [ ] Pan by dragging canvas
+  - [ ] Zoom with mouse wheel
+  - [ ] Verify zoom centers on cursor
+  - [ ] Refresh page → viewport restored
+  - [ ] Cursors remain accurate during pan/zoom
 
 **Definition of Done:**
 - ✅ Canvas pans smoothly with drag
@@ -491,75 +491,75 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Define object types**
-  - Files: `src/types/object.types.ts`
-  - Define `CanvasObject` base interface
-  - Define `RectangleObject` with: `{ id, type: 'rectangle', x, y, width, height, color, lockedBy }`
+  - [ ] Files: `src/types/object.types.ts`
+  - [ ] Define `CanvasObject` base interface
+  - [ ] Define `RectangleObject` with: `{ id, type: 'rectangle', x, y, width, height, color, lockedBy }`
 
 - [ ] **Build object service**
-  - Files: `src/services/object.service.ts`
-  - Use Firebase Realtime Database
-  - Path: `/objects/{objectId}`
-  - Function: `createObject(object)` - Add to database
-  - Function: `updateObject(objectId, updates)` - Update object
-  - Function: `deleteObject(objectId)` - Remove object
-  - Function: `subscribeToObjects(callback)` - Listen to changes
+  - [ ] Files: `src/services/object.service.ts`
+  - [ ] Use Firebase Realtime Database
+  - [ ] Path: `/objects/{objectId}`
+  - [ ] Function: `createObject(object)` - Add to database
+  - [ ] Function: `updateObject(objectId, updates)` - Update object
+  - [ ] Function: `deleteObject(objectId)` - Remove object
+  - [ ] Function: `subscribeToObjects(callback)` - Listen to changes
 
 - [ ] **Create useObjects hook**
-  - Files: `src/hooks/useObjects.ts`
-  - State: `objects` map, `selectedObjectId`
-  - Subscribe to object updates
-  - Method: `createRectangle(x, y)` - Create with default size/color
-  - Method: `selectObject(objectId)` - Set selection
-  - Method: `deselectObject()` - Clear selection
-  - Return objects, selection, and methods
+  - [ ] Files: `src/hooks/useObjects.ts`
+  - [ ] State: `objects` map, `selectedObjectId`
+  - [ ] Subscribe to object updates
+  - [ ] Method: `createRectangle(x, y)` - Create with default size/color
+  - [ ] Method: `selectObject(objectId)` - Set selection
+  - [ ] Method: `deselectObject()` - Clear selection
+  - [ ] Return objects, selection, and methods
 
 - [ ] **Build CanvasObject component**
-  - Files: `src/components/Canvas/CanvasObject.tsx`
-  - Render Konva Rect
-  - Props: `object`, `isSelected`, `onSelect`
-  - Show stroke when selected
-  - Handle click for selection
-  - Set draggable={false} for now
+  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [ ] Render Konva Rect
+  - [ ] Props: `object`, `isSelected`, `onSelect`
+  - [ ] Show stroke when selected
+  - [ ] Handle click for selection
+  - [ ] Set draggable={false} for now
 
 - [ ] **Add creation mode toggle**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - State: `isCreating` boolean
-  - Toggle between "select" and "create" modes
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] State: `isCreating` boolean
+  - [ ] Toggle between "select" and "create" modes
 
 - [ ] **Build simple Toolbar**
-  - Files: `src/components/Canvas/Toolbar.tsx`
-  - Button: "Add Rectangle" - toggles creation mode
-  - Show current mode state
-  - Position at top of canvas
+  - [ ] Files: `src/components/Canvas/Toolbar.tsx`
+  - [ ] Button: "Add Rectangle" - toggles creation mode
+  - [ ] Show current mode state
+  - [ ] Position at top of canvas
 
 - [ ] **Implement rectangle creation**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - When in creation mode:
-    - Stage click creates rectangle at pointer position
-    - Default: 100x100px, random color
-    - Exit creation mode after creating
-  - When in select mode:
-    - Click on rectangle selects it
-    - Click on empty space deselects
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] When in creation mode:
+    - [ ] Stage click creates rectangle at pointer position
+    - [ ] Default: 100x100px, random color
+    - [ ] Exit creation mode after creating
+  - [ ] When in select mode:
+    - [ ] Click on rectangle selects it
+    - [ ] Click on empty space deselects
 
 - [ ] **Render objects from database**
-  - Files: `src/components/Canvas/Canvas.tsx`
-  - Map over objects from useObjects
-  - Render CanvasObject for each
-  - Layer order: background → objects → cursors
+  - [ ] Files: `src/components/Canvas/Canvas.tsx`
+  - [ ] Map over objects from useObjects
+  - [ ] Render CanvasObject for each
+  - [ ] Layer order: background → objects → cursors
 
 - [ ] **Test object creation and sync**
-  - Create rectangles in one browser
-  - Verify they appear in other browser instantly
-  - Test selection visual feedback
-  - Create 10+ rectangles for performance check
+  - [ ] Create rectangles in one browser
+  - [ ] Verify they appear in other browser instantly
+  - [ ] Test selection visual feedback
+  - [ ] Create 10+ rectangles for performance check
 
 - [ ] **Deploy to Vercel**
-  - Commit and push changes
-  - Verify deployment succeeds
-  - Test rectangle creation on production
-  - Test multi-user object sync
-  - Verify pan/zoom still works with objects
+  - [ ] Commit and push changes
+  - [ ] Verify deployment succeeds
+  - [ ] Test rectangle creation on production
+  - [ ] Test multi-user object sync
+  - [ ] Verify pan/zoom still works with objects
 
 **Definition of Done:**
 - ✅ Can create rectangles by clicking
@@ -578,40 +578,40 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Implement object locking service functions**
-  - Files: `src/services/object.service.ts`
-  - Function: `acquireLock(objectId, userId)` - Use transaction
-  - Function: `releaseLock(objectId, userId)` - Clear lock
-  - Implement with Firebase transaction for atomicity
+  - [ ] Files: `src/services/object.service.ts`
+  - [ ] Function: `acquireLock(objectId, userId)` - Use transaction
+  - [ ] Function: `releaseLock(objectId, userId)` - Clear lock
+  - [ ] Implement with Firebase transaction for atomicity
 
 - [ ] **Add lock acquisition logic**
-  - Files: `src/hooks/useObjects.ts`
-  - Method: `lockObject(objectId)` - Try to acquire lock
-  - Method: `unlockObject(objectId)` - Release lock
-  - Return lock status with objects
+  - [ ] Files: `src/hooks/useObjects.ts`
+  - [ ] Method: `lockObject(objectId)` - Try to acquire lock
+  - [ ] Method: `unlockObject(objectId)` - Release lock
+  - [ ] Return lock status with objects
 
 - [ ] **Enable dragging in CanvasObject**
-  - Files: `src/components/Canvas/CanvasObject.tsx`
-  - Props: add `isLocked`, `onDragStart`, `onDragEnd`
-  - Set `draggable={!isLocked && isSelected}`
-  - Different visual when locked by another user
+  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [ ] Props: add `isLocked`, `onDragStart`, `onDragEnd`
+  - [ ] Set `draggable={!isLocked && isSelected}`
+  - [ ] Different visual when locked by another user
 
 - [ ] **Handle drag start**
-  - Files: `src/components/Canvas/CanvasObject.tsx`
-  - On dragStart: Call `onDragStart` prop
-  - Parent attempts to acquire lock via transaction
-  - If lock acquired: Allow drag
-  - If lock failed: Cancel drag
+  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [ ] On dragStart: Call `onDragStart` prop
+  - [ ] Parent attempts to acquire lock via transaction
+  - [ ] If lock acquired: Allow drag
+  - [ ] If lock failed: Cancel drag
 
 - [ ] **Handle drag end**
-  - Files: `src/components/Canvas/CanvasObject.tsx`
-  - On dragEnd: Get new position from event
-  - Call `onDragEnd` with new x, y
-  - Parent updates object position in database
-  - Release lock
+  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [ ] On dragEnd: Get new position from event
+  - [ ] Call `onDragEnd` with new x, y
+  - [ ] Parent updates object position in database
+  - [ ] Release lock
 
 - [ ] **Implement transaction-based locking**
-  - Files: `src/services/object.service.ts`
-  ```javascript
+  - [ ] Files: `src/services/object.service.ts`
+  - [ ] ```javascript
   const lockRef = database.ref(`/objects/${objectId}/lockedBy`);
   return lockRef.transaction((current) => {
     if (!current) return userId;
@@ -620,27 +620,27 @@ Following the "Start with the Hard Part" principle with regular deployments:
   ```
 
 - [ ] **Show locked object state**
-  - Files: `src/components/Canvas/CanvasObject.tsx`
-  - If locked by another: Lower opacity or different stroke
-  - Cursor changes to not-allowed when hovering
-  - Cannot select if locked by another
+  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [ ] If locked by another: Lower opacity or different stroke
+  - [ ] Cursor changes to not-allowed when hovering
+  - [ ] Cannot select if locked by another
 
 - [ ] **Update position in real-time**
-  - Files: `src/hooks/useObjects.ts`
-  - Method: `moveObject(objectId, x, y)` - Update position
-  - All clients receive position updates
-  - Smooth visual update
+  - [ ] Files: `src/hooks/useObjects.ts`
+  - [ ] Method: `moveObject(objectId, x, y)` - Update position
+  - [ ] All clients receive position updates
+  - [ ] Smooth visual update
 
 - [ ] **Handle lock cleanup on disconnect**
-  - Files: `src/services/object.service.ts`
-  - When acquiring lock: Set up onDisconnect to release
-  - Prevents orphaned locks if user disconnects while dragging
+  - [ ] Files: `src/services/object.service.ts`
+  - [ ] When acquiring lock: Set up onDisconnect to release
+  - [ ] Prevents orphaned locks if user disconnects while dragging
 
 - [ ] **Test object movement and locking**
-  - User A drags rectangle → User B sees it move
-  - User A dragging → User B cannot select same rectangle
-  - User A releases → User B can now drag
-  - Disconnect while dragging → lock released
+  - [ ] User A drags rectangle → User B sees it move
+  - [ ] User A dragging → User B cannot select same rectangle
+  - [ ] User A releases → User B can now drag
+  - [ ] Disconnect while dragging → lock released
 
 **Definition of Done:**
 - ✅ Can drag rectangles to new positions
@@ -659,61 +659,61 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Verify Firebase persistence**
-  - Files: Review all services
-  - Confirm all creates/updates write to Realtime Database
-  - Database handles persistence automatically
+  - [ ] Files: Review all services
+  - [ ] Confirm all creates/updates write to Realtime Database
+  - [ ] Database handles persistence automatically
 
 - [ ] **Load initial canvas state**
-  - Files: `src/hooks/useObjects.ts`
-  - On mount: Fetch all existing objects
-  - Subscribe to updates after initial load
-  - New users see existing canvas state
+  - [ ] Files: `src/hooks/useObjects.ts`
+  - [ ] On mount: Fetch all existing objects
+  - [ ] Subscribe to updates after initial load
+  - [ ] New users see existing canvas state
 
 - [ ] **Verify viewport persistence**
-  - Files: `src/hooks/useCanvas.ts`
-  - Confirm localStorage save/load works
-  - Test: Refresh with custom zoom/pan → restores correctly
+  - [ ] Files: `src/hooks/useCanvas.ts`
+  - [ ] Confirm localStorage save/load works
+  - [ ] Test: Refresh with custom zoom/pan → restores correctly
 
 - [ ] **Handle reconnection gracefully**
-  - Files: `src/hooks/usePresence.ts`
-  - Re-establish presence on reconnect
-  - Firebase Realtime Database handles this automatically
+  - [ ] Files: `src/hooks/usePresence.ts`
+  - [ ] Re-establish presence on reconnect
+  - [ ] Firebase Realtime Database handles this automatically
 
 - [ ] **Clean up locks on disconnect**
-  - Files: `src/services/object.service.ts`
-  - Verify onDisconnect handlers work
-  - Test: Close browser while dragging → lock released
+  - [ ] Files: `src/services/object.service.ts`
+  - [ ] Verify onDisconnect handlers work
+  - [ ] Test: Close browser while dragging → lock released
 
 - [ ] **Test persistence scenarios**
-  - Create objects → refresh → objects persist
-  - Custom viewport → refresh → viewport persists
-  - All users leave → return → canvas unchanged
-  - Disconnect mid-drag → object stays, lock released
+  - [ ] Create objects → refresh → objects persist
+  - [ ] Custom viewport → refresh → viewport persists
+  - [ ] All users leave → return → canvas unchanged
+  - [ ] Disconnect mid-drag → object stays, lock released
 
 - [ ] **Add basic error handling**
-  - Files: All service files
-  - Wrap database calls in try-catch
-  - Log errors to console
-  - Don't crash on network errors
+  - [ ] Files: All service files
+  - [ ] Wrap database calls in try-catch
+  - [ ] Log errors to console
+  - [ ] Don't crash on network errors
 
 - [ ] **Performance check**
-  - Create 20+ rectangles
-  - Move objects rapidly
-  - Verify no major lag
-  - Test with 3+ concurrent users
+  - [ ] Create 20+ rectangles
+  - [ ] Move objects rapidly
+  - [ ] Verify no major lag
+  - [ ] Test with 3+ concurrent users
 
 - [ ] **Final deployment to Vercel**
-  - Commit all changes
-  - Push to main branch
-  - Verify build succeeds
-  - No console errors in production
+  - [ ] Commit all changes
+  - [ ] Push to main branch
+  - [ ] Verify build succeeds
+  - [ ] No console errors in production
 
 - [ ] **Production testing**
-  - Test all features on deployed URL
-  - Multi-user collaboration test
-  - Persistence test
-  - Lock conflict test
-  - Share URL with others for testing
+  - [ ] Test all features on deployed URL
+  - [ ] Multi-user collaboration test
+  - [ ] Persistence test
+  - [ ] Lock conflict test
+  - [ ] Share URL with others for testing
 
 **Definition of Done:**
 - ✅ All state persists across refreshes
@@ -731,38 +731,38 @@ Following the "Start with the Hard Part" principle with regular deployments:
 ### Tasks:
 
 - [ ] **Fix critical bugs found in testing**
-  - Address any show-stopping issues
-  - Focus only on bugs that break MVP requirements
-  - Don't add features
+  - [ ] Address any show-stopping issues
+  - [ ] Focus only on bugs that break MVP requirements
+  - [ ] Don't add features
 
 - [ ] **Create README documentation**
-  - Files: `README.md`
-  - Project description
-  - Tech stack used
-  - Setup instructions
-  - Deployed URL
-  - Known limitations
+  - [ ] Files: `README.md`
+  - [ ] Project description
+  - [ ] Tech stack used
+  - [ ] Setup instructions
+  - [ ] Deployed URL
+  - [ ] Known limitations
 
 - [ ] **Record demo video**
-  - 3-5 minute demonstration
-  - Show: Login, cursors, creating rectangles, moving objects, locking, persistence
-  - Multiple browsers to show collaboration
-  - Upload to YouTube/Loom
-  - Add link to README
+  - [ ] 3-5 minute demonstration
+  - [ ] Show: Login, cursors, creating rectangles, moving objects, locking, persistence
+  - [ ] Multiple browsers to show collaboration
+  - [ ] Upload to YouTube/Loom
+  - [ ] Add link to README
 
 - [ ] **Final testing checklist**
-  - 2+ users can see each other's cursors
-  - Objects sync in real-time
-  - Locking prevents conflicts
-  - State persists on refresh
-  - Viewport position saves
-  - 5+ users work simultaneously
+  - [ ] 2+ users can see each other's cursors
+  - [ ] Objects sync in real-time
+  - [ ] Locking prevents conflicts
+  - [ ] State persists on refresh
+  - [ ] Viewport position saves
+  - [ ] 5+ users work simultaneously
 
 - [ ] **Submit MVP**
-  - Ensure deployed URL is accessible
-  - GitHub repository is public
-  - README has all required information
-  - Demo video link works
+  - [ ] Ensure deployed URL is accessible
+  - [ ] GitHub repository is public
+  - [ ] README has all required information
+  - [ ] Demo video link works
 
 **Definition of Done:**
 - ✅ No critical bugs remain
