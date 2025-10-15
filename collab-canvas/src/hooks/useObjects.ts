@@ -5,10 +5,11 @@
  * Provides methods to create, select, and manage rectangles on the canvas.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { RectangleObject, ObjectsMap } from '../types/object.types';
 import * as objectService from '../services/object.service';
 import { getRandomColor } from '../utils/colors';
+import { throttle } from '../utils/throttle';
 
 /**
  * Hook return type with objects state and management methods
@@ -19,6 +20,10 @@ interface UseObjectsReturn {
   createRectangle: (x: number, y: number) => void;
   selectObject: (objectId: string) => void;
   deselectObject: () => void;
+  moveObject: (objectId: string, x: number, y: number) => Promise<void>;
+  moveObjectDuringDrag: (objectId: string, x: number, y: number) => void;
+  lockObject: (objectId: string, userId: string) => Promise<boolean>;
+  unlockObject: (objectId: string) => Promise<void>;
 }
 
 /**
@@ -50,6 +55,14 @@ const DEFAULT_RECT_HEIGHT = 100;
 export function useObjects(): UseObjectsReturn {
   const [objects, setObjects] = useState<ObjectsMap>({});
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+
+  // Create a ref to hold the throttled update function
+  // This ensures we have a stable reference across re-renders
+  const throttledUpdateRef = useRef(
+    throttle((objectId: string, x: number, y: number) => {
+      objectService.updateObjectPositionDuringDrag(objectId, x, y);
+    }, 50) // 50ms throttle for responsive real-time updates
+  );
 
   // Subscribe to object updates from Firebase
   useEffect(() => {
@@ -110,12 +123,71 @@ export function useObjects(): UseObjectsReturn {
     setSelectedObjectId(null);
   }
 
+  /**
+   * Moves an object to a new position
+   * 
+   * Updates the object's x and y coordinates in Firebase. All connected
+   * users will receive the position update in real-time.
+   * 
+   * @param objectId - ID of the object to move
+   * @param x - New X coordinate
+   * @param y - New Y coordinate
+   */
+  async function moveObject(objectId: string, x: number, y: number): Promise<void> {
+    await objectService.updateObject(objectId, { x, y });
+  }
+
+  /**
+   * Moves an object during drag (throttled, real-time)
+   * 
+   * Sends throttled position updates to Firebase during dragging for real-time
+   * synchronization. This allows other users to see the object moving smoothly.
+   * Throttled to 50ms (20 updates per second) for responsive feel.
+   * 
+   * @param objectId - ID of the object being dragged
+   * @param x - Current X coordinate
+   * @param y - Current Y coordinate
+   */
+  function moveObjectDuringDrag(objectId: string, x: number, y: number): void {
+    throttledUpdateRef.current(objectId, x, y);
+  }
+
+  /**
+   * Attempts to acquire a lock on an object
+   * 
+   * Uses Firebase transaction to atomically check if the object is unlocked
+   * and acquire the lock if available. This prevents race conditions where
+   * multiple users try to drag the same object simultaneously.
+   * 
+   * @param objectId - ID of the object to lock
+   * @param userId - ID of the user acquiring the lock
+   * @returns Promise that resolves to true if lock was acquired, false otherwise
+   */
+  async function lockObject(objectId: string, userId: string): Promise<boolean> {
+    return await objectService.acquireLock(objectId, userId);
+  }
+
+  /**
+   * Releases the lock on an object
+   * 
+   * Clears the lockedBy field, allowing other users to drag the object.
+   * 
+   * @param objectId - ID of the object to unlock
+   */
+  async function unlockObject(objectId: string): Promise<void> {
+    await objectService.releaseLock(objectId);
+  }
+
   return {
     objects,
     selectedObjectId,
     createRectangle,
     selectObject,
     deselectObject,
+    moveObject,
+    moveObjectDuringDrag,
+    lockObject,
+    unlockObject,
   };
 }
 

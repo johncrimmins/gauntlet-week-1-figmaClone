@@ -16,11 +16,11 @@ As you complete each PR, update this section:
 - [x] PR #4: Multiplayer Cursors & Deploy
 - [x] PR #5: Basic Canvas with Pan/Zoom & Grid
 - [x] PR #6: Rectangle Shape Creation & Deploy
-- [ ] PR #7: Object Movement & Real-Time Sync
+- [x] PR #7: Object Movement & Real-Time Sync
 - [ ] PR #8: State Persistence & Final Deploy
 - [ ] PR #9: Bug Fixes & Documentation
 
-**Current Status:** PR #6 Complete (Rectangle Shape Creation & Deploy)
+**Current Status:** PR #7 Complete (Object Movement & Real-Time Sync)
 
 ---
 
@@ -740,41 +740,41 @@ Following the "Start with the Hard Part" principle with regular deployments:
 
 ### Tasks:
 
-- [ ] **Task 1: Implement object locking service functions**
-  - [ ] Files: `src/services/object.service.ts`
-  - [ ] Function: `acquireLock(objectId, userId)` - Use transaction
-  - [ ] Function: `releaseLock(objectId, userId)` - Clear lock
-  - [ ] Implement with Firebase transaction for atomicity
+- [x] **Task 1: Implement object locking service functions**
+  - [x] Files: `src/services/object.service.ts`
+  - [x] Function: `acquireLock(objectId, userId)` - Use transaction
+  - [x] Function: `releaseLock(objectId, userId)` - Clear lock
+  - [x] Implement with Firebase transaction for atomicity
 
-- [ ] **Task 2: Add lock acquisition logic**
-  - [ ] Files: `src/hooks/useObjects.ts`
-  - [ ] Method: `lockObject(objectId)` - Try to acquire lock
-  - [ ] Method: `unlockObject(objectId)` - Release lock
-  - [ ] Return lock status with objects
+- [x] **Task 2: Add lock acquisition logic**
+  - [x] Files: `src/hooks/useObjects.ts`
+  - [x] Method: `lockObject(objectId)` - Try to acquire lock
+  - [x] Method: `unlockObject(objectId)` - Release lock
+  - [x] Return lock status with objects
 
-- [ ] **Task 3: Enable dragging in CanvasObject**
-  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
-  - [ ] Props: add `isLocked`, `onDragStart`, `onDragEnd`
-  - [ ] Set `draggable={!isLocked && isSelected}`
-  - [ ] Different visual when locked by another user
+- [x] **Task 3: Enable dragging in CanvasObject**
+  - [x] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [x] Props: add `isLocked`, `onDragStart`, `onDragEnd`
+  - [x] Set `draggable={!isLocked && isSelected}`
+  - [x] Different visual when locked by another user
 
-- [ ] **Task 4: Handle drag start**
-  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
-  - [ ] On dragStart: Call `onDragStart` prop
-  - [ ] Parent attempts to acquire lock via transaction
-  - [ ] If lock acquired: Allow drag
-  - [ ] If lock failed: Cancel drag
+- [x] **Task 4: Handle drag start**
+  - [x] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [x] On dragStart: Call `onDragStart` prop
+  - [x] Parent attempts to acquire lock via transaction
+  - [x] If lock acquired: Allow drag
+  - [x] If lock failed: Cancel drag
 
-- [ ] **Task 5: Handle drag end**
-  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
-  - [ ] On dragEnd: Get new position from event
-  - [ ] Call `onDragEnd` with new x, y
-  - [ ] Parent updates object position in database
-  - [ ] Release lock
+- [x] **Task 5: Handle drag end**
+  - [x] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [x] On dragEnd: Get new position from event
+  - [x] Call `onDragEnd` with new x, y
+  - [x] Parent updates object position in database
+  - [x] Release lock
 
-- [ ] **Task 6: Implement transaction-based locking**
-  - [ ] Files: `src/services/object.service.ts`
-  - [ ] ```javascript
+- [x] **Task 6: Implement transaction-based locking**
+  - [x] Files: `src/services/object.service.ts`
+  - [x] ```javascript
   const lockRef = database.ref(`/objects/${objectId}/lockedBy`);
   return lockRef.transaction((current) => {
     if (!current) return userId;
@@ -782,28 +782,28 @@ Following the "Start with the Hard Part" principle with regular deployments:
   });
   ```
 
-- [ ] **Task 7: Show locked object state**
-  - [ ] Files: `src/components/Canvas/CanvasObject.tsx`
-  - [ ] If locked by another: Lower opacity or different stroke
-  - [ ] Cursor changes to not-allowed when hovering
-  - [ ] Cannot select if locked by another
+- [x] **Task 7: Show locked object state**
+  - [x] Files: `src/components/Canvas/CanvasObject.tsx`
+  - [x] If locked by another: Lower opacity or different stroke
+  - [x] Cursor changes to not-allowed when hovering
+  - [x] Cannot select if locked by another
 
-- [ ] **Task 8: Update position in real-time**
-  - [ ] Files: `src/hooks/useObjects.ts`
-  - [ ] Method: `moveObject(objectId, x, y)` - Update position
-  - [ ] All clients receive position updates
-  - [ ] Smooth visual update
+- [x] **Task 8: Update position in real-time**
+  - [x] Files: `src/hooks/useObjects.ts`
+  - [x] Method: `moveObject(objectId, x, y)` - Update position
+  - [x] All clients receive position updates
+  - [x] Smooth visual update
 
-- [ ] **Task 9: Handle lock cleanup on disconnect**
-  - [ ] Files: `src/services/object.service.ts`
-  - [ ] When acquiring lock: Set up onDisconnect to release
-  - [ ] Prevents orphaned locks if user disconnects while dragging
+- [x] **Task 9: Handle lock cleanup on disconnect**
+  - [x] Files: `src/services/object.service.ts`
+  - [x] When acquiring lock: Set up onDisconnect to release
+  - [x] Prevents orphaned locks if user disconnects while dragging
 
-- [ ] **Task 10: Test object movement and locking**
-  - [ ] User A drags rectangle → User B sees it move
-  - [ ] User A dragging → User B cannot select same rectangle
-  - [ ] User A releases → User B can now drag
-  - [ ] Disconnect while dragging → lock released
+- [x] **Task 10: Test object movement and locking**
+  - [x] User A drags rectangle → User B sees it move
+  - [x] User A dragging → User B cannot select same rectangle
+  - [x] User A releases → User B can now drag
+  - [x] Disconnect while dragging → lock released
 
 **Definition of Done:**
 - ✅ Can drag rectangles to new positions
@@ -812,6 +812,9 @@ Following the "Start with the Hard Part" principle with regular deployments:
 - ✅ Visual feedback for locked objects
 - ✅ Locks release on disconnect
 - ✅ No conflicts with multiple users
+- ✅ Cursor position updates correctly during object drag
+- ✅ Viewport does not reset when dropping objects
+- ✅ Real-time object movement visible to all users during drag
 
 ---
 

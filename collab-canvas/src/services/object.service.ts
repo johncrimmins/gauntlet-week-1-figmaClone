@@ -5,10 +5,41 @@
  * Provides CRUD operations and real-time synchronization for collaborative object editing.
  */
 
-import { ref, set, update, remove, onValue, off } from 'firebase/database';
+import { ref, set, update, remove, onValue, off, runTransaction, onDisconnect } from 'firebase/database';
 import type { DataSnapshot } from 'firebase/database';
 import { database } from './firebase';
 import type { RectangleObject, ObjectsMap } from '../types/object.types';
+
+/**
+ * Validates that a position value is a valid number
+ * 
+ * @param value - Value to validate
+ * @returns True if valid, false otherwise
+ */
+function isValidPosition(value: number): boolean {
+  return typeof value === 'number' && !isNaN(value) && isFinite(value);
+}
+
+/**
+ * Validates an object's position data before writing to Firebase
+ * 
+ * @param updates - Object updates to validate
+ * @throws Error if position data is invalid
+ */
+function validateObjectUpdate(updates: Partial<RectangleObject>): void {
+  if ('x' in updates && !isValidPosition(updates.x!)) {
+    throw new Error(`Invalid x position: ${updates.x}`);
+  }
+  if ('y' in updates && !isValidPosition(updates.y!)) {
+    throw new Error(`Invalid y position: ${updates.y}`);
+  }
+  if ('width' in updates && !isValidPosition(updates.width!)) {
+    throw new Error(`Invalid width: ${updates.width}`);
+  }
+  if ('height' in updates && !isValidPosition(updates.height!)) {
+    throw new Error(`Invalid height: ${updates.height}`);
+  }
+}
 
 /**
  * Creates a new canvas object in the database
@@ -32,6 +63,9 @@ import type { RectangleObject, ObjectsMap } from '../types/object.types';
  * });
  */
 export async function createObject(object: RectangleObject): Promise<void> {
+  // Validate object data before creating
+  validateObjectUpdate(object);
+  
   const objectRef = ref(database, `objects/${object.id}`);
   await set(objectRef, object);
 }
@@ -57,6 +91,9 @@ export async function updateObject(
   objectId: string,
   updates: Partial<RectangleObject>
 ): Promise<void> {
+  // Validate updates before writing to Firebase
+  validateObjectUpdate(updates);
+  
   const objectRef = ref(database, `objects/${objectId}`);
   await update(objectRef, updates);
 }
@@ -116,5 +153,112 @@ export function subscribeToObjects(
   return () => {
     off(objectsRef, 'value', handleValue);
   };
+}
+
+/**
+ * Attempts to acquire a lock on an object using a transaction
+ * 
+ * Uses Firebase transaction to atomically check if the object is unlocked
+ * and set the lock if available. This prevents race conditions where multiple
+ * users try to lock the same object simultaneously.
+ * 
+ * Also sets up an onDisconnect handler to automatically release the lock
+ * if the user disconnects while holding it.
+ * 
+ * @param objectId - ID of the object to lock
+ * @param userId - ID of the user acquiring the lock
+ * @returns Promise that resolves to true if lock was acquired, false otherwise
+ * 
+ * @example
+ * const acquired = await acquireLock('rect_123', 'user_456');
+ * if (acquired) {
+ *   console.log('Lock acquired, can drag object');
+ * } else {
+ *   console.log('Object is locked by another user');
+ * }
+ */
+export async function acquireLock(objectId: string, userId: string): Promise<boolean> {
+  const lockRef = ref(database, `objects/${objectId}/lockedBy`);
+  
+  try {
+    const result = await runTransaction(lockRef, (currentLock) => {
+      // If there's no lock or it's our lock, we can acquire it
+      if (!currentLock || currentLock === userId) {
+        return userId;
+      }
+      // Otherwise abort - someone else has the lock
+      return; // Returning undefined aborts the transaction
+    });
+    
+    if (result.committed) {
+      // Set up automatic cleanup on disconnect
+      await onDisconnect(lockRef).remove();
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('Error acquiring lock:', error);
+    return false;
+  }
+}
+
+/**
+ * Releases a lock on an object
+ * 
+ * Clears the lockedBy field by setting it to null. This allows other
+ * users to acquire the lock and drag the object.
+ * 
+ * @param objectId - ID of the object to unlock
+ * @returns Promise that resolves when lock is released
+ * 
+ * @example
+ * await releaseLock('rect_123');
+ */
+export async function releaseLock(objectId: string): Promise<void> {
+  const lockRef = ref(database, `objects/${objectId}/lockedBy`);
+  await set(lockRef, null);
+}
+
+/**
+ * Updates object position during drag (lightweight, no validation)
+ * 
+ * This is a lightweight version of updateObject specifically for real-time
+ * position updates during dragging. Skips validation for performance since
+ * the final position will be validated on dragEnd.
+ * 
+ * @param objectId - ID of the object to update
+ * @param x - New X coordinate
+ * @param y - New Y coordinate
+ * @returns Promise that resolves when update is complete
+ * 
+ * @example
+ * // Called repeatedly during drag (throttled)
+ * await updateObjectPositionDuringDrag('rect_123', 150, 200);
+ */
+export async function updateObjectPositionDuringDrag(
+  objectId: string,
+  x: number,
+  y: number
+): Promise<void> {
+  const objectRef = ref(database, `objects/${objectId}`);
+  await update(objectRef, { x, y });
+}
+
+/**
+ * Clears all objects from the database (emergency cleanup)
+ * 
+ * Use this to recover from corrupted data states. This will delete
+ * all objects from Firebase, requiring users to recreate them.
+ * 
+ * @returns Promise that resolves when all objects are cleared
+ * 
+ * @example
+ * await clearAllObjects();
+ */
+export async function clearAllObjects(): Promise<void> {
+  const objectsRef = ref(database, 'objects');
+  await remove(objectsRef);
+  console.log('All objects cleared from Firebase');
 }
 

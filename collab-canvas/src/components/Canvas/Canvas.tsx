@@ -21,6 +21,7 @@ import { Stage, Layer, Rect } from 'react-konva';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import * as presenceService from '../../services/presence.service';
 import * as cursorService from '../../services/cursor.service';
+import * as objectService from '../../services/object.service';
 import { canvasToScreen, screenToCanvas } from '../../utils/canvas.utils';
 import './Canvas.css';
 
@@ -52,11 +53,14 @@ export function Canvas() {
     currentUser?.color || null
   );
   const { viewport, setViewport } = useCanvas();
-  const { objects, selectedObjectId, createRectangle, selectObject, deselectObject } = useObjects();
+  const { objects, selectedObjectId, createRectangle, selectObject, deselectObject, moveObject, moveObjectDuringDrag, lockObject, unlockObject } = useObjects();
   
   // Creation mode state
   const [isCreating, setIsCreating] = useState(false);
   const [ghostPosition, setGhostPosition] = useState<{ x: number; y: number } | null>(null);
+  
+  // Track whether an object is being dragged (to disable stage dragging)
+  const [isDraggingObject, setIsDraggingObject] = useState(false);
 
   /**
    * Handles user logout with proper cleanup
@@ -109,14 +113,19 @@ export function Canvas() {
 
   /**
    * Handles stage drag end to update viewport position
+   * Only updates viewport if the Stage itself was dragged (not an object)
    */
   function handleDragEnd(e: KonvaEventObject<DragEvent>) {
-    const stage = e.target;
-    setViewport({
-      ...viewport,
-      x: stage.x(),
-      y: stage.y(),
-    });
+    // Only update viewport if the Stage itself was dragged
+    // This prevents object drags from resetting the viewport
+    if (e.target.getType() === 'Stage') {
+      const stage = e.target;
+      setViewport({
+        ...viewport,
+        x: stage.x(),
+        y: stage.y(),
+      });
+    }
   }
 
   /**
@@ -196,6 +205,106 @@ export function Canvas() {
     }
   }
 
+  /**
+   * Handles object drag start
+   * Attempts to acquire lock and disables stage dragging
+   */
+  async function handleObjectDragStart(objectId: string): Promise<boolean> {
+    if (!currentUser?.id) return false;
+    
+    try {
+      // Try to acquire lock
+      const acquired = await lockObject(objectId, currentUser.id);
+      
+      if (acquired) {
+        // Disable stage dragging while we're dragging an object
+        setIsDraggingObject(true);
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error starting object drag:', error);
+      setIsDraggingObject(false);
+      return false;
+    }
+  }
+
+  /**
+   * Handles object drag move (real-time position updates)
+   * Sends throttled position updates to Firebase during drag
+   * Also updates cursor position so it moves with the object
+   */
+  function handleObjectDragMove(objectId: string, objectX: number, objectY: number, pointerX: number, pointerY: number): void {
+    // Send throttled object position update to Firebase for real-time sync
+    moveObjectDuringDrag(objectId, objectX, objectY);
+    
+    // Also update cursor position so it moves with the mouse during drag
+    // Convert screen coordinates to canvas coordinates
+    const canvasPos = screenToCanvas(pointerX, pointerY, viewport);
+    updateMyCursor(canvasPos.x, canvasPos.y);
+  }
+
+  /**
+   * Handles object drag end
+   * Updates position and releases lock, re-enables stage dragging
+   */
+  async function handleObjectDragEnd(objectId: string, x: number, y: number): Promise<void> {
+    try {
+      // Validate positions one more time at parent level
+      if (!isValidNumber(x) || !isValidNumber(y)) {
+        console.error('Attempted to save invalid position:', { objectId, x, y });
+        throw new Error('Invalid position values');
+      }
+      
+      // Update position in Firebase
+      await moveObject(objectId, x, y);
+      
+      // Release lock
+      await unlockObject(objectId);
+    } catch (error) {
+      console.error('Error ending object drag:', error);
+    } finally {
+      // Always re-enable stage dragging, even if there was an error
+      setIsDraggingObject(false);
+    }
+  }
+
+  /**
+   * Validates that a value is a valid number
+   */
+  function isValidNumber(value: number): boolean {
+    return typeof value === 'number' && !isNaN(value) && isFinite(value);
+  }
+
+  /**
+   * Validates that an object has valid position data
+   */
+  function isValidObject(obj: any): boolean {
+    return obj && 
+           isValidNumber(obj.x) && 
+           isValidNumber(obj.y) && 
+           isValidNumber(obj.width) && 
+           isValidNumber(obj.height);
+  }
+
+  /**
+   * Emergency function to clear all corrupted objects from Firebase
+   */
+  async function handleClearCorruptedData() {
+    if (window.confirm('This will delete all objects from the canvas. Are you sure?')) {
+      try {
+        await objectService.clearAllObjects();
+        console.log('Corrupted data cleared successfully');
+      } catch (error) {
+        console.error('Failed to clear corrupted data:', error);
+      }
+    }
+  }
+
+  // Filter out objects with invalid positions before rendering
+  const validObjects = Object.values(objects).filter(isValidObject);
+
   return (
     <div className="canvas-container">
       {/* Header with logout button */}
@@ -212,6 +321,17 @@ export function Canvas() {
             >
               Logout
             </button>
+            {/* Emergency cleanup button (only show in development) */}
+            {import.meta.env.DEV && (
+              <button 
+                onClick={handleClearCorruptedData}
+                className="canvas-logout-btn"
+                style={{ backgroundColor: '#dc3545', marginLeft: '8px' }}
+                title="Clear all objects from Firebase"
+              >
+                Clear Data
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -231,7 +351,7 @@ export function Canvas() {
           y={viewport.y}
           scaleX={viewport.scale}
           scaleY={viewport.scale}
-          draggable={true}
+          draggable={!isDraggingObject}
           onDragEnd={handleDragEnd}
           onWheel={handleWheel}
           onMouseMove={handleMouseMove}
@@ -255,13 +375,17 @@ export function Canvas() {
               viewport={viewport}
             />
 
-            {/* Canvas objects (rectangles) */}
-            {Object.values(objects).map((obj) => (
+            {/* Canvas objects (rectangles) - only render valid objects */}
+            {validObjects.map((obj) => (
               <CanvasObject
                 key={obj.id}
                 object={obj}
                 isSelected={selectedObjectId === obj.id}
                 onSelect={() => selectObject(obj.id)}
+                onDragStart={() => handleObjectDragStart(obj.id)}
+                onDragMove={(objectX, objectY, pointerX, pointerY) => handleObjectDragMove(obj.id, objectX, objectY, pointerX, pointerY)}
+                onDragEnd={(x, y) => handleObjectDragEnd(obj.id, x, y)}
+                currentUserId={currentUser?.id}
               />
             ))}
 
